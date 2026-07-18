@@ -29,6 +29,25 @@ Javaで開発した、従業員の出退勤管理および給与の自動計算�
 * **バージョン管理:** Git / GitHub
 
 ## 📂 データベース設計（主要なテーブル構造）
+JobManager v1
+↓
+名前・出勤・退勤・休憩を入力
+↓
+JobManager v2
+勤務時間と残業時間を計算
+↓
+JobManager v3
+残業代を計算
+↓
+JobManager v4()
+複数社員を管理
+↓
+JobManager v5
+CSVファイルに保存
+↓
+JobManager v6
+GUI化（Swing / JavaFX）
 
 ## 現在の目標
 7/18　クラス化して設計をスッキリさせたい。
+
