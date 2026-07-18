@@ -12,20 +12,21 @@ public class JobManager {
 		System.out.println("出勤時間を入力してください(例:9:30)");
 		// "9:30" という文字列として受け取る
 		String startInput = scanner.next(); 
-		
 		// 「:」で文字を分割する
 		String[] startTimeParts = startInput.split(":");
 		int startHour = Integer.parseInt(startTimeParts[0]);  // "◯:◯◯" の◯を数値に変換
 		int startMinute = Integer.parseInt(startTimeParts[1]);// "◯:◯◯" の◯◯を数値に変換
+		int startTotalMinute = startHour * 60 + startMinute;// "◯:◯◯" を分に変換
 				
 		
 		System.out.println("退勤時間を入力してください(例:18:30)");
 		 // "18:30" という文字列として受け取る
 		String endInput = scanner.next();
+		// 「:」で文字を分割する
 		String[] endTimeParts = endInput.split(":");
 		int endHour = Integer.parseInt(endTimeParts[0]);// "◯:◯◯" の◯を数値に変換
 		int endMinute = Integer.parseInt(endTimeParts[1]);// "◯:◯◯" の◯◯を数値に変換
-		
+		int endTotalMinute = endHour * 60 + endMinute;// "◯:◯◯" を分に変換
 		
 		System.out.println("休憩時間を入力してください(例:1:00)");
 		 // "1:00" という文字列として受け取る
@@ -33,27 +34,26 @@ public class JobManager {
 		String[] breakTimeParts = breakInput.split(":");
 		int breakHour = Integer.parseInt(breakTimeParts[0]);// "◯:◯◯" の◯を数値に変換
 		int breakMinute = Integer.parseInt(breakTimeParts[1]);// "◯:◯◯" の◯◯を数値に変換
+		int breakTotalMinute = breakHour * 60 + breakMinute;// "◯:◯◯" を分に変換
 		
 		// 勤務時間の計算※休憩を含む
-		int workHour = endHour - startHour;	
-		int workMinute = endMinute - startMinute;		
+		int workTotalMinute = endTotalMinute - startTotalMinute;
 		// 実務時間の計算※休憩を引いた時間
-		int workingHour = workHour - breakHour;	
-		int workingMinute = workMinute - breakMinute;
-		if (workingMinute < 0) {
-		    workingHour = workingHour - 1;       // 時間を1時間減らす
-		    workingMinute = workingMinute + 60;  // その分、分に60分を足す
-		}
+		int workingTotalMinute = workTotalMinute - breakTotalMinute;
 		//残業時間の計算
 		// 法定労働時間（8時間）
 		int legalWorkMinute = 8 * 60;
-		// 勤務時間（分）
-		int workingTotalMinute = workingHour * 60 + workingMinute;
 		// 残業時間(分)
 		int overtimeMinute =  0;
 		if (workingTotalMinute > legalWorkMinute) {
 		    overtimeMinute = workingTotalMinute - legalWorkMinute;
-		}		
+			}		
+		
+		// 実務時間を時間と分に直す
+		int workingHour = workingTotalMinute / 60;
+		int workingMinute = workingTotalMinute % 60;
+
+		System.out.println("実務時間：" + workingHour + "時間" + workingMinute + "分");
 		// 給与の計算
 		int hourlyWage = 1200;
 		int salary = (workingTotalMinute * hourlyWage) / 60;
