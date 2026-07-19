@@ -1,61 +1,58 @@
 import java.util.Scanner;
 
-public class JobManager {
+//時間管理のための専用クラス
+class Mytime{
+	private int hour;// カプセル化(private)して書き換えを不可とする
+	private int minute;
+	
+	//9:30など文字列を受け取って、時と分に分解して保存する。
+	public Mytime(String timeStr) {
+        String[] parts = timeStr.split(":");
+        this.hour = Integer.parseInt(parts[0]);
+        this.minute = Integer.parseInt(parts[1]);
+	}
+	// 計算が楽になるように、すべての時間を「分」に変換するメソッド
+    public int toTotalMinutes() {
+    	return hour * 60 + minute;
+    }
+    // 他の Mytime との差（diff）を計算してそのまま値を返す
+    public int diff(Mytime other) {
+        return this.toTotalMinutes() - other.toTotalMinutes();
+    }
+}
 
+public class JobManager {
 	public static void main(String[] args) {
 		// Scannerを準備する
 		Scanner scanner = new Scanner(System.in);
 		System.out.println("社員名を入力してください：");
 		// ユーザーが入力した名前を受け取る
 		String name = scanner.nextLine();
-		
+		// 入力時間を箱に入れる
 		System.out.println("出勤時間を入力してください(例:9:30)");
-		// "9:30" という文字列として受け取る
-		String startInput = scanner.next(); 
-		// 「:」で文字を分割する
-		String[] startTimeParts = startInput.split(":");
-		int startHour = Integer.parseInt(startTimeParts[0]);  // "◯:◯◯" の◯を数値に変換
-		int startMinute = Integer.parseInt(startTimeParts[1]);// "◯:◯◯" の◯◯を数値に変換
-		int startTotalMinute = startHour * 60 + startMinute;// "◯:◯◯" を分に変換
-				
-		
+		Mytime startTime = new Mytime(scanner.next());
 		System.out.println("退勤時間を入力してください(例:18:30)");
-		 // "18:30" という文字列として受け取る
-		String endInput = scanner.next();
-		// 「:」で文字を分割する
-		String[] endTimeParts = endInput.split(":");
-		int endHour = Integer.parseInt(endTimeParts[0]);// "◯:◯◯" の◯を数値に変換
-		int endMinute = Integer.parseInt(endTimeParts[1]);// "◯:◯◯" の◯◯を数値に変換
-		int endTotalMinute = endHour * 60 + endMinute;// "◯:◯◯" を分に変換
-		
+		Mytime endTime = new Mytime(scanner.next());
 		System.out.println("休憩時間を入力してください(例:1:00)");
-		 // "1:00" という文字列として受け取る
-		String breakInput = scanner.next();
-		String[] breakTimeParts = breakInput.split(":");
-		int breakHour = Integer.parseInt(breakTimeParts[0]);// "◯:◯◯" の◯を数値に変換
-		int breakMinute = Integer.parseInt(breakTimeParts[1]);// "◯:◯◯" の◯◯を数値に変換
-		int breakTotalMinute = breakHour * 60 + breakMinute;// "◯:◯◯" を分に変換
+		Mytime breakTime = new Mytime(scanner.next());
 		
-		// 勤務時間の計算※休憩を含む
-		int workTotalMinute = endTotalMinute - startTotalMinute;
 		// 実務時間の計算※休憩を引いた時間
-		int workingTotalMinute = workTotalMinute - breakTotalMinute;
+        int workingTotalMinute =
+        	    endTime.diff(startTime) - breakTime.toTotalMinutes();
 		//残業時間の計算
 		// 法定労働時間（8時間）
 		int legalWorkMinute = 8 * 60;
 		// 残業時間(分)
-		int overtimeMinute =  0;
-		if (workingTotalMinute > legalWorkMinute) {
-		    overtimeMinute = workingTotalMinute - legalWorkMinute;
-			}		
+		int overtimeMinute = Math.max(0, workingTotalMinute - legalWorkMinute);
 		
-		// 実務時間を時間と分に直す
+		// 画面表示用に 時 と 分 に戻す
 		int workingHour = workingTotalMinute / 60;
 		int workingMinute = workingTotalMinute % 60;
 
 		System.out.println("実務時間：" + workingHour + "時間" + workingMinute + "分");
 		// 給与の計算
 		int hourlyWage = 1200;
+		// 基本給（実務時間全体にかかる分）
 		int salary = (workingTotalMinute * hourlyWage) / 60;
 		// 残業時間の計算 残業代の割増率（25%アップ）と仮定
 		double overtimeRate = 1.25; 
