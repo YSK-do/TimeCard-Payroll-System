@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate; // 【追加】日付を扱うためのJava標準クラス
+import java.time.format.DateTimeFormatter; // 【追加】フォーマット用クラス
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -67,14 +69,13 @@ class WorkRecord {
     public int getOvertimePay() { return overtimePay; }
 }
 
-// 【新設】設定情報を管理する専用クラス
+// 設定情報を管理する専用クラス
 class Config {
     private String name;
     private int hourlyWage;
     private int contractMinutes;
     private int breakMinutes;
 
-    // 新規登録用のコンストラクタ
     public Config(String name, int hourlyWage, int contractMinutes, int breakMinutes) {
         this.name = name;
         this.hourlyWage = hourlyWage;
@@ -82,7 +83,6 @@ class Config {
         this.breakMinutes = breakMinutes;
     }
 
-    // CSVの1行から設定を復元するコンストラクタ
     public Config(String csvLine) {
         String[] data = csvLine.split(",");
         this.name = data[0];
@@ -91,12 +91,10 @@ class Config {
         this.breakMinutes = Integer.parseInt(data[3]);
     }
 
-    // CSV用の文字列に変換するメソッド
     public String toCsv() {
         return name + "," + hourlyWage + "," + contractMinutes + "," + breakMinutes;
     }
 
-    // 外部から値を取得するためのゲッター
     public String getName() { return name; }
     public int getHourlyWage() { return hourlyWage; }
     public int getContractMinutes() { return contractMinutes; }
@@ -126,13 +124,13 @@ public class JobManager {
         Scanner scanner = new Scanner(System.in);
         
         // --- 初期設定ファイルの読み込み・作成機能 ---
-        Config config = null; // 【改善】バラバラだった変数を1つのオブジェクトに統合
+        Config config = null; 
         File configFile = new File("config.csv");
         
         if (!configFile.exists()) {
             System.out.println("【初期設定】初回起動のため、基本情報を登録してください。");
             System.out.print("社員名を入力してください：");
-            String name = scanner.nextLine();
+            String nameInput = scanner.nextLine();
             
             System.out.print("時給を入力してください（例:1200）：");
             String wageInput = toHalfWidth(scanner.nextLine());
@@ -146,10 +144,8 @@ public class JobManager {
             Mytime breakTimeSetup = new Mytime(scanner.nextLine());
             int breakMinutes = breakTimeSetup.toTotalMinutes();
             
-            // 入力された情報からConfigオブジェクトを作成
-            config = new Config(name, hourlyWage, contractMinutes, breakMinutes);
+            config = new Config(nameInput, hourlyWage, contractMinutes, breakMinutes);
             
-            // 設定をCSVに保存
             try (FileWriter configWriter = new FileWriter(configFile, false)) {
                 configWriter.write(config.toCsv() + "\n");
                 System.out.println("初期設定を保存しました。\n");
@@ -157,7 +153,6 @@ public class JobManager {
                 System.out.println("設定ファイルの保存中にエラーが発生しました。");
             }
         } else {
-            // 設定ファイルがある場合は、ファイルから1行読み込んでConfigオブジェクトを復元
             try (BufferedReader configReader = new BufferedReader(new FileReader(configFile))) {
                 String line = configReader.readLine();
                 if (line != null) {
@@ -170,16 +165,28 @@ public class JobManager {
             }
         }
         
+        // --- 【改善】現在の年・月を自動取得 ---
+        LocalDate today = LocalDate.now();
+        String currentYearMonth = today.format(DateTimeFormatter.ofPattern("yyyy-MM")); // 例: "2026-07"
+        
         // --- ここから現行の勤怠入力システム ---
-        System.out.println("日付を入力してください（例:2026-07-19）：");
-        String date = toHalfWidth(scanner.next());
+        System.out.println("【現在の対象月: " + currentYearMonth + "】");
+        System.out.print("日にちを入力してください（例:19 または 20）：");
+        String dayInput = toHalfWidth(scanner.next());
+        
+        // 1桁（例: "9"）で入力された場合、"09" に自動整形する
+        if (dayInput.length() == 1) {
+            dayInput = "0" + dayInput;
+        }
+        
+        // 年月と日にちをガッチャンコして「2026-07-20」にする
+        String date = currentYearMonth + "-" + dayInput;
         
         System.out.println("出勤時間を入力してください(例:9:30)：");
         Mytime startTime = new Mytime(scanner.next());
         System.out.println("退勤時間を入力してください(例:18:30)：");
         Mytime endTime = new Mytime(scanner.next());
         
-        // 【改善】configオブジェクトから設定値を引っ張る
         int workingTotalMinute = endTime.diff(startTime) - config.getBreakMinutes();
         int overtimeMinute = Math.max(0, workingTotalMinute - config.getContractMinutes());
         
@@ -188,12 +195,10 @@ public class JobManager {
 
         System.out.println("実務時間：" + workingHour + "時間" + workingMinute + "分");
         
-        // 【改善】給与計算もconfigの値を使用
         int salary = (workingTotalMinute * config.getHourlyWage()) / 60;
         double overtimeRate = 0.25; 
         int overtimePay = (int) ((config.getHourlyWage() * overtimeRate * overtimeMinute) / 60);
         
-        // 今回の入力データを作成
         WorkRecord newRecord = new WorkRecord(date, config.getName(), workingTotalMinute, overtimeMinute, salary, overtimePay);
 
         // --- 既存のCSVを読み込み、同じ日付のデータがあれば差し替える ---
@@ -236,17 +241,20 @@ public class JobManager {
             e.printStackTrace();
         }
         
-        // 集計
+        // --- 集計（指定した「月」だけのデータに絞り込む） ---
         int totalOvertime = 0;
         int monthlySalary = 0;
         int monthlyOvertimePay = 0;
+        
+        // 入力された日付から「年-月」の部分（最初の7文字）を切り出す（今回の自動生成版でもそのまま綺麗に機能します）
+        String targetMonth = date.substring(0, 7);
         
         if (worklogFile.exists()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(worklogFile))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     WorkRecord record = new WorkRecord(line);
-                    if (record.getName().equals(config.getName())) {
+                    if (record.getDate().startsWith(targetMonth) && record.getName().equals(config.getName())) {
                         totalOvertime += record.getOvertimeMinutes();
                         monthlySalary += record.getSalary();
                         monthlyOvertimePay += record.getOvertimePay();
@@ -258,7 +266,7 @@ public class JobManager {
         }
         
         System.out.println("================================");
-        System.out.println("【月間集計結果】");
+        System.out.println("【" + targetMonth + " の月間集計結果】"); 
         System.out.println("月間残業時間：" + totalOvertime / 60 + "時間" + totalOvertime % 60 + "分");
         System.out.println("当月支給金額：" + (monthlySalary + monthlyOvertimePay) + "円");
         System.out.println("================================");
