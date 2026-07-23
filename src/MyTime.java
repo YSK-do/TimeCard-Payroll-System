@@ -3,7 +3,7 @@ public class MyTime {
     private final int minute;
 
     public MyTime(String timeText) {
-        String cleaned = InputNormalizer.toHalfWidth(timeText).replace("：", ":");
+        String cleaned = toHalfWidth(timeText).replace("：", ":");
         String[] parts = cleaned.split(":");
         if (parts.length != 2) {
             throw new IllegalArgumentException("時刻は「時:分」の形式で入力してください。");
@@ -21,5 +21,26 @@ public class MyTime {
 
     public int diff(MyTime other) {
         return toTotalMinutes() - other.toTotalMinutes();
+    }
+
+    public static String toHalfWidth(String text) {
+        if (text == null) {
+            return null;
+        }
+
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            char character = text.charAt(i);
+            if (character >= '０' && character <= '９') {
+                result.append((char) (character - '０' + '0'));
+            } else if (character == '－' || character == 'ー' || character == '‐') {
+                result.append('-');
+            } else if (character == '：') {
+                result.append(':');
+            } else {
+                result.append(character);
+            }
+        }
+        return result.toString();
     }
 }
