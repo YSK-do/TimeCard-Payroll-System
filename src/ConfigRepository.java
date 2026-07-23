@@ -22,7 +22,7 @@ public class ConfigRepository {
         String name = scanner.nextLine();
 
         System.out.print("時給を入力してください（例:1200）：");
-        int hourlyWage = Integer.parseInt(InputNormalizer.toHalfWidth(scanner.nextLine()));
+        int hourlyWage = Integer.parseInt(MyTime.toHalfWidth(scanner.nextLine()));
 
         System.out.print("1日の契約労働時間を入力してください（例:8:00）：");
         int contractMinutes = new MyTime(scanner.nextLine()).toTotalMinutes();
