@@ -16,7 +16,7 @@ public class JobManager {
             System.out.println();
             System.out.println("【現在の対象月: " + currentYearMonth + "】");
             System.out.print("日にちを入力してください（例:19 または 20）：");
-            String day = InputNormalizer.toHalfWidth(scanner.next());
+            String day = MyTime.toHalfWidth(scanner.next());
             if (day.length() == 1) {
                 day = "0" + day;
             }
