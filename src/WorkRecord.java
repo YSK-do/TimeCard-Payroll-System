@@ -17,7 +17,10 @@ public class WorkRecord {
     }
 
     public WorkRecord(String csvLine) {
-        String[] data = csvLine.split(",");
+        String[] data = csvLine.split(",", -1);
+        if (data.length != 6) {
+            throw new IllegalArgumentException("勤務記録ファイルの形式が不正です。worklog.csvを確認してください。");
+        }
         this.date = data[0];
         this.name = data[1];
         this.workMinutes = Integer.parseInt(data[2]);
