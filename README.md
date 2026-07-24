@@ -79,7 +79,7 @@ cd TimeCard-Payroll-System
 ### 2. コンパイルする
 
 ```bash
-javac src/JobManager.java
+javac src/*.java
 ```
 
 ### 3. 実行する
@@ -87,7 +87,14 @@ javac src/JobManager.java
 ```bash
 java -cp src JobManager
 ```
+### 4. テストする
 
+```bash
+javac src/*.java
+java -cp src TestRunner
+```
+
+`TestRunner` は、時刻変換、給与計算、勤務記録の保存・上書き、月間集計、CSV形式チェックを確認します。
 ## 📝 入力例
 
 ```text
