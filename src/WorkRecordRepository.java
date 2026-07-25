@@ -7,7 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WorkRecordRepository {
-    private static final String WORKLOG_FILE = "worklog.csv";
+     private final File worklogFile;
+
+    public WorkRecordRepository() {
+        this(new File("worklog.csv"));
+    }
+
+    WorkRecordRepository(File worklogFile) {
+        this.worklogFile = worklogFile;
+    }
 
     public boolean saveOrUpdate(WorkRecord newRecord) {
         List<WorkRecord> records = readAll();
