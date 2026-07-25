@@ -9,7 +9,7 @@ import java.util.List;
 public class WorkRecordRepository {
      private final File worklogFile;
 
-    public WorkRecordRepository() {
+     public WorkRecordRepository() {
         this(new File("worklog.csv"));
     }
 
