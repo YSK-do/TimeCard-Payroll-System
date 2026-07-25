@@ -1,6 +1,7 @@
 public class PayrollService {
     private static final double OVERTIME_RATE = 0.25;
     private static final int MINUTES_PER_DAY = 24 * 60;
+    private static final int BREAK_THRESHOLD_MINUTES = 6 * 60;
 
     public WorkRecord calculate(String date, Config config, MyTime startTime, MyTime endTime) {
         int elapsedMinutes = endTime.diff(startTime);
@@ -8,7 +9,10 @@ public class PayrollService {
             elapsedMinutes += MINUTES_PER_DAY;
         }
 
-        int workMinutes = elapsedMinutes - config.getBreakMinutes();
+        int breakMinutes = elapsedMinutes > BREAK_THRESHOLD_MINUTES
+                ? config.getBreakMinutes()
+                : 0;
+        int workMinutes = elapsedMinutes - breakMinutes;
         if (workMinutes < 0) {
             throw new IllegalArgumentException("休憩時間が勤務時間を超えています。");
         }
