@@ -1,10 +1,16 @@
 public class PayrollService {
     private static final double OVERTIME_RATE = 0.25;
+    private static final int MINUTES_PER_DAY = 24 * 60;
 
     public WorkRecord calculate(String date, Config config, MyTime startTime, MyTime endTime) {
-        int workMinutes = endTime.diff(startTime) - config.getBreakMinutes();
+        int elapsedMinutes = endTime.diff(startTime);
+        if (elapsedMinutes < 0) {
+            elapsedMinutes += MINUTES_PER_DAY;
+        }
+
+        int workMinutes = elapsedMinutes - config.getBreakMinutes();
         if (workMinutes < 0) {
-            throw new IllegalArgumentException("退勤時間は出勤時間より後にしてください。");
+            throw new IllegalArgumentException("休憩時間が勤務時間を超えています。");
         }
 
         int overtimeMinutes = Math.max(0, workMinutes - config.getContractMinutes());
