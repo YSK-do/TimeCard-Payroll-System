@@ -10,7 +10,7 @@ public class MyTime {
         }
         this.hour = Integer.parseInt(parts[0]);
         this.minute = Integer.parseInt(parts[1]);
-        if (hour < 0 || minute < 0 || minute >= 60) {
+        if (hour < 0 || hour >= 24 || minute < 0 || minute >= 60) {
             throw new IllegalArgumentException("正しい時刻を入力してください。");
         }
     }
