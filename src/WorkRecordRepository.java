@@ -56,7 +56,7 @@ public class WorkRecordRepository {
 
     private List<WorkRecord> readAll() {
         List<WorkRecord> records = new ArrayList<>();
-        File file = new File(WORKLOG_FILE);
+        File file = worklogFile;
         if (!file.exists()) {
             return records;
         }
@@ -73,7 +73,7 @@ public class WorkRecordRepository {
     }
 
     private void writeAll(List<WorkRecord> records) {
-        try (FileWriter writer = new FileWriter(WORKLOG_FILE, false)) {
+        try (FileWriter writer = new FileWriter(worklogFile, false)) {
             for (WorkRecord record : records) {
                 writer.write(record.toCsv() + System.lineSeparator());
             }
