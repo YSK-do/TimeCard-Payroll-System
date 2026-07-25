@@ -15,7 +15,7 @@ public class Config {
        String[] data = csvLine.split(",", -1);
         if (data.length != 4) {
             throw new IllegalArgumentException("設定ファイルの形式が不正です。初期設定を確認してください。");
-            ｝
+        }
         this.name = data[0];
         this.hourlyWage = Integer.parseInt(data[1]);
         this.contractMinutes = Integer.parseInt(data[2]);
