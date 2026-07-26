@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="毎日の勤務時間を、迷わずかんたんに登録できる勤怠管理画面です。">
+    <title>勤怠管理 | TimeCard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="TimeCard ホーム">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" role="img">
+            <circle cx="12" cy="12" r="8.25"></circle>
+            <path d="M12 7.5V12l3 1.75"></path>
+          </svg>
+        </span>
+        <span>TimeCard</span>
+      </a>
+      <p>かんたん勤怠管理</p>
+    </header>
+
+    <main>
+      <section class="intro" aria-labelledby="page-title">
+        <p class="eyebrow">DAILY ATTENDANCE</p>
+        <h1 id="page-title">勤怠管理</h1>
+        <p>今日の勤務時間を入力して、勤怠を登録しましょう。</p>
+      </section>
+
+      <section class="attendance-card" aria-labelledby="form-title">
+        <div class="card-heading">
+          <div class="heading-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect>
+              <path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 id="form-title">勤務時間を入力</h2>
+            <p>日付と出退勤時刻を確認してください</p>
+          </div>
+        </div>
+
+        <form id="attendance-form">
+          <div class="field full-width">
+            <label for="target-month">対象月</label>
+            <div class="select-wrap">
+              <select id="target-month" name="targetMonth">
+                <option value="current">今月</option>
+                <option value="previous">前月</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field full-width">
+            <label for="work-date">勤務日</label>
+            <div class="input-with-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect>
+                <path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path>
+              </svg>
+              <input id="work-date" name="workDate" type="date" value="2026-07-26" required>
+            </div>
+          </div>
+
+          <div class="time-fields">
+            <div class="field">
+              <label for="start-time">出勤時刻</label>
+              <div class="input-with-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8.5"></circle>
+                  <path d="M12 7.5V12l3 1.75"></path>
+                </svg>
+                <input id="start-time" name="startTime" type="time" value="09:00" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="end-time">退勤時刻</label>
+              <div class="input-with-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="8.5"></circle>
+                  <path d="M12 7.5V12l3 1.75"></path>
+                </svg>
+                <input id="end-time" name="endTime" type="time" value="18:00" required>
+              </div>
+            </div>
+          </div>
+
+          <p id="form-error" class="form-message error" role="alert" hidden></p>
+          <button class="submit-button" type="submit">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m5 12 4 4L19 6"></path>
+            </svg>
+            勤怠を登録する
+          </button>
+        </form>
+      </section>
+
+      <section class="summary-card" aria-labelledby="summary-title" aria-live="polite">
+        <div class="summary-heading">
+          <span class="check-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="m6.5 12 3.5 3.5 7.5-8"></path></svg>
+          </span>
+          <h2 id="summary-title">勤務サマリー</h2>
+        </div>
+        <dl>
+          <div>
+            <dt>実働時間</dt>
+            <dd id="work-hours">8<span>時間</span></dd>
+          </div>
+          <div>
+            <dt>残業時間</dt>
+            <dd id="overtime-hours">0<span>時間</span></dd>
+          </div>
+          <div class="payment">
+            <dt>支給金額</dt>
+            <dd id="payment">―<span>円</span></dd>
+          </div>
+        </dl>
+        <p id="save-status" class="save-status" hidden>
+          <span aria-hidden="true">✓</span> 入力内容を確認しました
+        </p>
+      </section>
+
+      <p class="help-text">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9"></circle><path d="M12 11v5M12 8h.01"></path>
+        </svg>
+        登録した勤怠はCSVファイルに保存されます
+      </p>
+    </main>
+
+    <footer>© 2026 TimeCard Payroll System</footer>
+  </body>
+</html>
