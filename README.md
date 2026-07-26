@@ -92,6 +92,27 @@ javac src/*.java
 java -cp src JobManager
 ```
 
+### HTML画面を確認する
+
+HTML画面は、Spring Bootの標準的な静的リソース配置に合わせて、次の場所に置いています。
+
+```text
+src/main/resources/static/
+├── index.html
+├── styles.css
+└── app.js
+```
+
+Spring Bootを導入すると、`index.html` はトップページ（`/`）、CSSとJavaScriptはそれぞれ `/styles.css` と `/app.js` として自動配信されます。Spring Boot導入前に画面だけ確認する場合は、次のローカルサーバーを利用できます。
+
+```bash
+python3 -m http.server 8000 -d src/main/resources/static
+```
+
+起動後、ブラウザで `http://localhost:8000` を開いてください。
+
+現時点では入力内容をプレビューする静的な画面です。Spring Boot導入時は、`MyTime`、`PayrollService`、`WorkRecordRepository` を呼び出すControllerを追加し、`app.js` から勤怠登録APIへリクエストする構成を想定しています。サーバー側でHTMLを組み立てるThymeleafを採用する場合だけ、`index.html` を `src/main/resources/templates/` に移動してください。CSSとJavaScriptは引き続き `static/` に置きます。
+
 ## 🧪 テスト方法
 
 ```bash
