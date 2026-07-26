@@ -1,0 +1,156 @@
+:root {
+  color-scheme: light;
+  --navy: #17385f;
+  --blue: #2368a8;
+  --blue-dark: #18598f;
+  --blue-soft: #eef7fd;
+  --line: #dce6ef;
+  --muted: #6d7e8e;
+  --text: #24374b;
+  --background: #f5f8fa;
+  font-family: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--text);
+  background: linear-gradient(180deg, #fafdff 0%, var(--background) 48%, #f8fafb 100%);
+}
+
+button, input, select { font: inherit; }
+
+.site-header {
+  height: 74px;
+  padding: 0 max(24px, calc((100vw - 1120px) / 2));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, .94);
+  border-bottom: 1px solid #e6edf2;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--navy);
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: .01em;
+  text-decoration: none;
+}
+
+.brand-mark {
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  color: white;
+  background: var(--blue);
+  border-radius: 10px;
+}
+
+.brand-mark svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+.site-header p { margin: 0; color: #8795a3; font-size: 13px; letter-spacing: .06em; }
+
+main { width: min(100% - 40px, 680px); margin: 0 auto; padding: 54px 0 46px; }
+
+.intro { margin-bottom: 30px; text-align: center; }
+.eyebrow { margin: 0 0 9px; color: var(--blue); font-size: 11px; font-weight: 750; letter-spacing: .18em; }
+.intro h1 { margin: 0; color: var(--navy); font-size: clamp(28px, 4vw, 36px); letter-spacing: .06em; }
+.intro > p:last-child { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+
+.attendance-card, .summary-card {
+  background: white;
+  border: 1px solid #e3ebf1;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(35, 63, 86, .07);
+}
+
+.attendance-card { padding: 32px 36px 35px; }
+.card-heading { display: flex; align-items: center; gap: 15px; padding-bottom: 26px; border-bottom: 1px solid #e8eef3; }
+.heading-icon { width: 43px; height: 43px; flex: none; display: grid; place-items: center; color: var(--blue); background: var(--blue-soft); border-radius: 10px; }
+.heading-icon svg { width: 24px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+.card-heading h2 { margin: 0 0 5px; color: var(--navy); font-size: 18px; }
+.card-heading p { margin: 0; color: #8694a1; font-size: 12px; }
+
+form { padding-top: 25px; }
+.field { display: flex; flex-direction: column; gap: 9px; }
+.full-width + .full-width { margin-top: 20px; }
+label { color: #42576b; font-size: 13px; font-weight: 650; }
+input, select {
+  width: 100%;
+  height: 48px;
+  color: #2d4357;
+  background: #fff;
+  border: 1px solid #cdd9e3;
+  border-radius: 7px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+input { padding: 0 14px 0 44px; }
+select { padding: 0 40px 0 15px; appearance: none; cursor: pointer; }
+input:focus, select:focus { border-color: #4792c9; box-shadow: 0 0 0 3px rgba(53, 137, 196, .13); }
+.select-wrap { position: relative; }
+.select-wrap::after { content: ""; position: absolute; top: 18px; right: 17px; width: 7px; height: 7px; border-right: 1.5px solid #62778a; border-bottom: 1.5px solid #62778a; transform: rotate(45deg); pointer-events: none; }
+.input-with-icon { position: relative; }
+.input-with-icon svg { position: absolute; z-index: 1; top: 14px; left: 14px; width: 20px; color: #8192a2; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; pointer-events: none; }
+.time-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
+
+.submit-button {
+  width: 100%;
+  height: 52px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  background: var(--blue);
+  border: 0;
+  border-radius: 7px;
+  box-shadow: 0 6px 14px rgba(35, 104, 168, .2);
+  cursor: pointer;
+  transition: background .2s, transform .1s;
+}
+.submit-button:hover { background: var(--blue-dark); }
+.submit-button:active { transform: translateY(1px); }
+.submit-button svg { width: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.form-message { margin: 15px 0 -12px; font-size: 13px; }
+.error { color: #ba3e43; }
+
+.summary-card { margin-top: 22px; overflow: hidden; }
+.summary-heading { min-height: 54px; padding: 0 27px; display: flex; align-items: center; gap: 10px; background: #f1f8fc; border-bottom: 1px solid #e0edf5; }
+.summary-heading h2 { margin: 0; color: var(--navy); font-size: 14px; }
+.check-icon { width: 22px; height: 22px; display: grid; place-items: center; color: white; background: #3c8abd; border-radius: 50%; }
+.check-icon svg { width: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.summary-card dl { margin: 0; padding: 27px 24px 28px; display: grid; grid-template-columns: repeat(3, 1fr); }
+.summary-card dl > div { padding: 2px 24px; text-align: center; border-right: 1px solid var(--line); }
+.summary-card dl > div:last-child { border-right: 0; }
+.summary-card dt { margin-bottom: 9px; color: #758698; font-size: 12px; }
+.summary-card dd { margin: 0; color: var(--navy); font-size: 26px; font-weight: 750; }
+.summary-card dd span { margin-left: 4px; font-size: 12px; font-weight: 500; }
+.summary-card .payment dd { color: var(--blue); }
+.save-status { margin: -9px 24px 24px; padding: 10px; color: #31794e; background: #eef9f2; border-radius: 6px; text-align: center; font-size: 12px; }
+
+.help-text { margin: 21px 0 0; display: flex; align-items: center; justify-content: center; gap: 7px; color: #8795a2; font-size: 12px; }
+.help-text svg { width: 16px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; }
+footer { padding: 22px; color: #a0acb6; border-top: 1px solid #e6ecef; text-align: center; font-size: 11px; }
+
+@media (max-width: 560px) {
+  .site-header { height: 64px; padding: 0 20px; }
+  .site-header p { display: none; }
+  main { width: min(100% - 28px, 680px); padding-top: 38px; }
+  .attendance-card { padding: 25px 20px 26px; }
+  .time-fields { grid-template-columns: 1fr; }
+  .summary-card dl { padding: 24px 10px; }
+  .summary-card dl > div { padding: 2px 8px; }
+  .summary-card dd { font-size: 21px; }
+}
