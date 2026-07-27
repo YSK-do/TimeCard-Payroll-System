@@ -1,10 +1,11 @@
 # 勤怠管理・給与計算システム
 
-Javaで開発した、個人向けの勤怠管理・給与計算システムです。
+Javaの学習を目的に開発している、個人向けの勤怠管理・給与計算システムです。
 
-出勤・退勤時刻から実働時間、残業時間、給与を計算し、勤務記録をCSVファイルへ保存します。
+現在は、従来のコンソール版（CLI）と、Spring Bootを使用したWeb版が同じリポジトリにあります。  
+CLI版には給与計算や月間集計まで実装済みですが、Web版は勤怠登録APIとCSV保存までの段階です。
 
-## 📌 開発の背景
+## 開発の背景
 
 前職で派遣社員として働いていた際、残業時間の管理が曖昧だったことから、給与の未払いを経験しました。
 
@@ -12,35 +13,82 @@ Javaで開発した、個人向けの勤怠管理・給与計算システムで�
 
 毎日使用することを想定し、PC操作が苦手な方でも迷いにくい、シンプルなシステムを目指しています。
 
-## ✨ 主な機能
+## 現在の進捗
 
-### 初期設定
+| 機能 | CLI版 | Web版 |
+| --- | :---: | :---: |
+| 勤務日の入力 | ✅ | ✅ |
+| 出勤・退勤時刻の入力 | ✅ | ✅ |
+| 実働時間・残業時間の計算 | ✅ | ✅ |
+| CSVへの保存 | ✅ | ✅ |
+| 同じ日付・氏名の記録を上書き | ✅ | 未対応 |
+| 氏名・時給・休憩時間などの設定 | ✅ | 未対応 |
+| 基本給与・残業手当の計算 | ✅ | 未対応 |
+| 月間集計 | ✅ | 未対応 |
+| 自動テスト | 簡易テストあり | 未対応 |
 
-初回起動時に、次の情報を登録します。
+## Web版で現在できること
 
-- 氏名
-- 時給
-- 1日の契約労働時間
-- 標準休憩時間
+ブラウザ画面から勤務日、出勤時刻、退勤時刻を入力して勤怠を登録できます。
 
-登録した情報は `config.csv` に保存され、次回起動時に自動で読み込まれます。
+- 対象月は今月または前月を選択
+- 休憩時間は60分で固定
+- 標準労働時間は8時間で固定
+- 実働時間と残業時間を計算
+- 登録結果を画面に表示
+- POST APIを通じて `data/attendance.csv` に追記保存
+- 不正な入力に対してJSON形式のエラーメッセージを返却
 
-### 勤怠登録
+### API
 
-- 対象月を「今月」または「前月」から選択
-- 選択した月の「日にち」を入力
-- 出勤時刻と退勤時刻を入力
-- 実働時間と残業時間を自動計算
-- 同じ日付・同じ氏名の記録を再入力した場合は上書き
+```http
+POST /api/attendances
+Content-Type: application/json
+```
 
-### 給与計算・月間集計
+リクエスト例：
 
-- 実働時間に応じた基本給与を計算
-- 契約労働時間を超えた時間を残業時間として計算
-- 残業時間に対する25%の割増分を残業手当として計算
+```json
+{
+  "workDate": "2026-07-27",
+  "startTime": "09:00",
+  "endTime": "18:00"
+}
+```
+
+成功時はHTTP 201で次のような結果を返します。
+
+```json
+{
+  "workMinutes": 480,
+  "overtimeMinutes": 0,
+  "message": "勤怠をCSVへ保存しました。"
+}
+```
+
+### Web版の保存ファイル
+
+`data/attendance.csv` に次の形式で追記します。
+
+```csv
+workDate,startTime,endTime,workMinutes,overtimeMinutes
+2026-07-27,09:00,18:00,480,0
+```
+
+現時点では同じ勤務日を再登録しても上書きされず、新しい行として追加されます。
+
+## CLI版で現在できること
+
+- 初回起動時に氏名、時給、契約労働時間、標準休憩時間を設定
+- 設定を `config.csv` に保存し、次回起動時に読み込み
+- 今月または前月の勤務日を指定
+- 全角数字・全角コロンを含む時刻入力を半角へ変換
+- 実働時間、残業時間、基本給与、残業手当を計算
+- 勤務記録を `worklog.csv` に保存
+- 同じ日付・同じ氏名の記録を上書き
 - 対象月の残業時間と支給金額を集計
 
-計算式は次のとおりです。
+計算式：
 
 ```text
 実働時間 ＝ 退勤時刻 − 出勤時刻 − 標準休憩時間
@@ -51,82 +99,90 @@ Javaで開発した、個人向けの勤怠管理・給与計算システムで�
 
 金額は整数で計算し、1円未満は切り捨てます。
 
-## 🔄 システムの流れ
-
-1. 初回起動時に基本情報を登録する
-2. 今月または前月を選択する
-3. 勤務日、出勤時刻、退勤時刻を入力する
-4. 実働時間、残業時間、給与、残業手当を計算する
-5. 計算結果を `worklog.csv` に保存する
-6. 対象月の残業時間と支給金額を表示する
-
-## 🛠 使用技術
+## 使用技術
 
 | 分類 | 技術 |
 | --- | --- |
-| 言語 | Java |
-| 実行環境 | Java Standard Edition |
+| 言語 | Java 17、JavaScript |
+| フレームワーク | Spring Boot 4.1.0 |
+| 画面 | HTML / CSS |
+| API | Spring Web |
+| ビルド | Maven |
 | データ保存 | CSV |
 | バージョン管理 | Git / GitHub |
 
-外部ライブラリやデータベースは使用していません。
+データベースはまだ使用していません。
 
-## 🚀 実行方法
+## Web版の起動方法
 
-### 1. リポジトリをクローンする
+### 1. リポジトリをクローン
 
 ```bash
 git clone https://github.com/YSK-do/TimeCard-Payroll-System.git
 cd TimeCard-Payroll-System
 ```
 
-### 2. コンパイルする
+### 2. Spring Bootを起動
+
+Mavenがインストールされている場合：
 
 ```bash
-javac src/*.java
+mvn spring-boot:run
 ```
 
-### 3. 実行する
+Maven Wrapperを使用する場合：
 
 ```bash
-java -cp src JobManager
+./mvnw spring-boot:run
 ```
 
-### HTML画面を確認する
+Windowsでは次のコマンドを使用します。
 
-HTML画面は、Spring Bootの標準的な静的リソース配置に合わせて、次の場所に置いています。
+```powershell
+mvnw.cmd spring-boot:run
+```
+
+### 3. ブラウザで開く
 
 ```text
-src/main/resources/static/
-├── index.html
-├── styles.css
-└── app.js
+http://localhost:8080
 ```
 
-Spring Bootを導入すると、`index.html` はトップページ（`/`）、CSSとJavaScriptはそれぞれ `/styles.css` と `/app.js` として自動配信されます。Spring Boot導入前に画面だけ確認する場合は、次のローカルサーバーを利用できます。
+画面の `app.js` が `POST /api/attendances` を呼び出し、Spring Boot側で計算とCSV保存を行います。
+
+## CLI版の実行方法
+
+ソースは `src/main/java` にあります。
 
 ```bash
-python3 -m http.server 8000 -d src/main/resources/static
+javac src/main/java/*.java
+java -cp src/main/java JobManager
 ```
 
-起動後、ブラウザで `http://localhost:8000` を開いてください。
+CLI版とWeb版は現在別々の処理として動作しており、保存先のCSV形式も異なります。
 
-現時点では入力内容をプレビューする静的な画面です。Spring Boot導入時は、`MyTime`、`PayrollService`、`WorkRecordRepository` を呼び出すControllerを追加し、`app.js` から勤怠登録APIへリクエストする構成を想定しています。サーバー側でHTMLを組み立てるThymeleafを採用する場合だけ、`index.html` を `src/main/resources/templates/` に移動してください。CSSとJavaScriptは引き続き `static/` に置きます。
+| 種類 | 保存先 | 主な内容 |
+| --- | --- | --- |
+| CLI設定 | `config.csv` | 氏名、時給、契約労働時間、標準休憩時間 |
+| CLI勤怠 | `worklog.csv` | 日付、氏名、実働時間、残業時間、基本給与、残業手当 |
+| Web勤怠 | `data/attendance.csv` | 勤務日、出勤時刻、退勤時刻、実働時間、残業時間 |
 
-## 🧪 テスト方法
+## テスト
+
+### CLI版の簡易テスト
 
 ```bash
-javac src/*.java
-java -cp src TestRunner
+javac src/main/java/*.java
+java -cp src/main/java TestRunner
 ```
 
-`TestRunner` では、次の内容を確認します。
+次の内容を確認します。
 
-- 全角を含む時刻の変換と入力値チェック
+- 時刻の変換と入力値チェック
 - 実働時間・残業時間・給与・残業手当の計算
-- 今月・前月の日付生成と存在しない日付のチェック
+- 今月・前月の日付生成
 - 勤務記録の新規保存・上書き・月間集計
-- `config.csv` と `worklog.csv` の形式チェック
+- CSV形式のチェック
 
 すべて成功すると、最後に次のように表示されます。
 
@@ -134,71 +190,65 @@ java -cp src TestRunner
 TestRunner: 5 tests passed
 ```
 
-## 📝 入力例
+### Web版のテスト状況
+
+Spring Bootアプリの基本構成とAPIは作成済みですが、ControllerやServiceに対するJUnitの自動テストはまだ追加していません。
+
+## 主な構成
 
 ```text
-【対象月を選択してください】
-1: 今月（2026-07）
-2: 前月（2026-06）
-番号を入力してください（1 または 2）：1
-日にちを入力してください（例:19 または 20）：19
-出勤時間を入力してください（例:9:30）：9:30
-退勤時間を入力してください（例:18:30）：18:30
+src/main/java/
+├── JobManager.java
+├── Config.java
+├── ConfigRepository.java
+├── MyTime.java
+├── PayrollService.java
+├── WorkDateResolver.java
+├── WorkRecord.java
+├── WorkRecordRepository.java
+├── TestRunner.java
+└── com/example/timecard/
+    ├── TimeCardApplication.java
+    ├── controller/
+    │   ├── AttendanceController.java
+    │   └── ApiExceptionHandler.java
+    ├── domain/
+    │   ├── AttendanceRecord.java
+    │   ├── AttendanceRequest.java
+    │   └── AttendanceResponse.java
+    ├── repository/
+    │   └── AttendanceCsvRepository.java
+    └── service/
+        └── AttendanceService.java
+
+src/main/resources/static/
+├── index.html
+├── styles.css
+└── app.js
 ```
 
-時刻は `時:分` の形式で入力します。全角数字や全角コロンも半角へ変換して処理します。
+## 現在の制限
 
-## 📁 保存ファイル
-
-プログラムを実行したディレクトリに、次のCSVファイルが作成されます。
-
-| ファイル | 保存内容 |
-| --- | --- |
-| `config.csv` | 氏名、時給、契約労働時間（分）、標準休憩時間（分） |
-| `worklog.csv` | 日付、氏名、実働時間（分）、残業時間（分）、基本給与、残業手当 |
-
-同じ日付・同じ氏名のデータが存在する場合は、新しい入力内容で上書きします。
-
-## 💡 設計上の工夫
-
-### 時間を「分」に統一
-
-時刻や労働時間を合計分へ変換してから計算することで、実働時間や残業時間の計算を分かりやすくしています。
-
-### クラスごとに役割を分離
-
-| クラス | 役割 |
-| --- | --- |
-| `JobManager` | 入力から結果表示まで、システム全体の流れを管理 |
-| `MyTime` | 時刻の変換、全角文字の正規化、時間差の計算 |
-| `Config` | 氏名・時給・契約労働時間・休憩時間を保持 |
-| `ConfigRepository` | `config.csv` の作成と読み込み |
-| `WorkDateResolver` | 今月・前月と日にちから勤務日を生成 |
-| `PayrollService` | 実働時間・残業時間・給与・残業手当を計算 |
-| `WorkRecord` | 1日分の勤務記録を保持し、CSV形式へ変換 |
-| `WorkRecordRepository` | `worklog.csv` の保存・上書き・月間集計 |
-| `TestRunner` | 各機能の簡易テストを実行 |
-
-## ⚠️ 現在の制限
-
+- Web版の休憩時間は60分、標準労働時間は8時間で固定です
+- Web版では氏名、時給、給与、残業手当を扱っていません
+- Web版のCSV保存は追記のみで、同じ日の上書きには未対応です
+- Web版では月間集計を表示できません
+- CLI版とWeb版の処理およびCSVはまだ統合されていません
 - 選択できる対象月は今月と前月のみです
 - 日をまたぐ勤務には対応していません
-- 土日・祝日や深夜労働などの割増計算には対応していません
+- 土日・祝日、深夜労働などの割増計算には対応していません
 - CSVの値にカンマが含まれる場合のエスケープには対応していません
-- `config.csv` が空または不正な場合は、再設定せずエラーを表示して終了します
 
-## 🔜 今後の予定
+## 次に取り組むこと
 
-- カレンダー表示
-- 土日・祝日の判定
-- 月間残業時間が45時間を超えた場合の警告
-- GUIへの対応
-- 入力値チェックとエラーメッセージの改善
-- 日をまたぐ勤務やフレックスタイムへの対応
-- 不正な設定ファイルから初期設定を作り直す機能
+1. Web APIの自動テストを追加する
+2. `config.csv` の設定をWeb版から利用できるようにする
+3. CLI版の給与計算処理をWeb版へ統合する
+4. Web版のCSV保存を同日上書きに対応させる
+5. 月間の残業時間と支給金額をWeb画面へ表示する
 
-## ⚠️ 注意事項
+## 注意事項
 
-このシステムは、Java学習を目的とした個人開発作品です。
+このシステムは、JavaとSpring Bootの学習を目的とした個人開発作品です。
 
 実際の給与計算や勤怠管理に使用する場合は、勤務先の就業規則や最新の法令に合わせた確認・調整が必要です。
