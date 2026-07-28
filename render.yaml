@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: timecard-payroll-system
+    runtime: docker
+    plan: free
+    autoDeployTrigger: commit
+    healthCheckPath: /
