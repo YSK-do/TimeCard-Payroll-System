@@ -21,7 +21,7 @@ CLI版には給与計算や月間集計まで実装済みですが、Web版は�
 | 出勤・退勤時刻の入力 | ✅ | ✅ |
 | 実働時間・残業時間の計算 | ✅ | ✅ |
 | CSVへの保存 | ✅ | ✅ |
-| 同じ日付・氏名の記録を上書き | ✅ | 未対応 |
+| 同じ日付・氏名の記録を上書き | ✅ | ✅ |
 | 氏名・時給・休憩時間などの設定 | ✅ | 未対応 |
 | 基本給与・残業手当の計算 | ✅ | 未対応 |
 | 月間集計 | ✅ | 未対応 |
@@ -36,7 +36,7 @@ CLI版には給与計算や月間集計まで実装済みですが、Web版は�
 - 標準労働時間は8時間で固定
 - 実働時間と残業時間を計算
 - 登録結果を画面に表示
-- POST APIを通じて `data/attendance.csv` に追記保存
+- POST APIを通じて `data/attendance.csv` に保存\n- 同じ勤務日・氏名の記録は新しい内容で上書き
 - 不正な入力に対してJSON形式のエラーメッセージを返却
 
 ### API
@@ -50,6 +50,7 @@ Content-Type: application/json
 
 ```json
 {
+  "employeeName": "山田太郎",
   "workDate": "2026-07-27",
   "startTime": "09:00",
   "endTime": "18:00"
@@ -71,11 +72,11 @@ Content-Type: application/json
 `data/attendance.csv` に次の形式で追記します。
 
 ```csv
-workDate,startTime,endTime,workMinutes,overtimeMinutes
-2026-07-27,09:00,18:00,480,0
+employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes
+山田太郎,2026-07-27,09:00,18:00,480,0
 ```
 
-現時点では同じ勤務日を再登録しても上書きされず、新しい行として追加されます。
+同じ勤務日・氏名を再登録すると、以前の行を新しい内容へ上書きします。
 
 ## CLI版で現在できること
 
@@ -165,7 +166,7 @@ CLI版とWeb版は現在別々の処理として動作しており、保存先�
 | --- | --- | --- |
 | CLI設定 | `config.csv` | 氏名、時給、契約労働時間、標準休憩時間 |
 | CLI勤怠 | `worklog.csv` | 日付、氏名、実働時間、残業時間、基本給与、残業手当 |
-| Web勤怠 | `data/attendance.csv` | 勤務日、出勤時刻、退勤時刻、実働時間、残業時間 |
+| Web勤怠 | `data/attendance.csv` | 氏名、勤務日、出勤時刻、退勤時刻、実働時間、残業時間 |
 
 ## テスト
 
@@ -231,7 +232,6 @@ src/main/resources/static/
 
 - Web版の休憩時間は60分、標準労働時間は8時間で固定です
 - Web版では氏名、時給、給与、残業手当を扱っていません
-- Web版のCSV保存は追記のみで、同じ日の上書きには未対応です
 - Web版では月間集計を表示できません
 - CLI版とWeb版の処理およびCSVはまだ統合されていません
 - 選択できる対象月は今月と前月のみです
@@ -244,8 +244,7 @@ src/main/resources/static/
 1. Web APIの自動テストを追加する
 2. `config.csv` の設定をWeb版から利用できるようにする
 3. CLI版の給与計算処理をWeb版へ統合する
-4. Web版のCSV保存を同日上書きに対応させる
-5. 月間の残業時間と支給金額をWeb画面へ表示する
+4. 月間の残業時間と支給金額をWeb画面へ表示する
 
 ## 注意事項
 
