@@ -1,4 +1,5 @@
 const form = document.querySelector("#attendance-form");
+const employeeNameInput = document.querySelector("#employee-name");
 const dateInput = document.querySelector("#work-date");
 const monthSelect = document.querySelector("#target-month");
 const startInput = document.querySelector("#start-time");
@@ -118,6 +119,7 @@ form.addEventListener("submit", async (event) => {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
+        employeeName: employeeNameInput.value.trim(),
         workDate: dateInput.value,
         startTime: startInput.value,
         endTime: endInput.value
