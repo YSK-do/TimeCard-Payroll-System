@@ -88,7 +88,7 @@ function showActiveSettings(settings) {
   document.querySelector("#active-settings").textContent = text;
 }
 
-function refreshSummary() {
+function validateAttendance() {
   if (!currentSettings || !currentSettings.employeeName) {
     errorMessage.textContent = "先に基本設定を保存してください。";
     errorMessage.hidden = false;
@@ -113,20 +113,7 @@ function refreshSummary() {
     return false;
   }
 
-  const overtimeMinutes = Math.max(
-    0,
-    workMinutes - currentSettings.standardWorkMinutes
-  );
-  const payroll = calculatePayroll(workMinutes, overtimeMinutes);
-
   errorMessage.hidden = true;
-  showSummary(
-    workMinutes,
-    overtimeMinutes,
-    payroll.basePay,
-    payroll.overtimePay,
-    payroll.totalPay
-  );
   return true;
 }
 
@@ -146,7 +133,6 @@ async function loadSettings() {
   showActiveSettings(settings);
 
   if (settings.employeeName) {
-    refreshSummary();
     await loadMonthlySummary();
   }
 }
@@ -181,7 +167,6 @@ settingsForm.addEventListener("submit", async (event) => {
     showActiveSettings(result);
     settingsStatus.textContent = "✓ 基本設定を保存しました。";
     settingsStatus.hidden = false;
-    refreshSummary();
     await loadMonthlySummary();
   } catch (error) {
     settingsError.textContent = error.message;
@@ -257,14 +242,12 @@ monthSelect.addEventListener("change", () => {
   updateMonthRange();
   loadMonthlySummary();
 });
-startInput.addEventListener("change", refreshSummary);
-endInput.addEventListener("change", refreshSummary);
 updateMonthRange();
 
 attendanceForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  if (!refreshSummary()) {
+  if (!validateAttendance()) {
     return;
   }
 
