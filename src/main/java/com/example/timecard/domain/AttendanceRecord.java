@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record AttendanceRecord(
+        String employeeName,
         LocalDate workDate,
         LocalTime startTime,
         LocalTime endTime,
