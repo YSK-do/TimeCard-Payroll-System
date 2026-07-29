@@ -22,11 +22,20 @@ public class AttendanceService {
     }
 
     public AttendanceResponse register(AttendanceRequest request) {
-        if (request.workDate() == null
+        if (request.employeeName() == null
+                || request.employeeName().isBlank()
+                || request.workDate() == null
                 || request.startTime() == null
                 || request.endTime() == null) {
             throw new IllegalArgumentException(
-                    "勤務日と出退勤時刻を入力してください。");
+                    "氏名、勤務日、出退勤時刻を入力してください。");
+        }
+
+        String employeeName = request.employeeName().trim();
+
+        if (employeeName.contains(",")) {
+            throw new IllegalArgumentException(
+                    "氏名にカンマは使用できません。");
         }
 
         long elapsedMinutes = Duration.between(
@@ -49,17 +58,22 @@ public class AttendanceService {
                 Math.max(0, workMinutes - STANDARD_WORK_MINUTES);
 
         AttendanceRecord record = new AttendanceRecord(
+                employeeName,
                 request.workDate(),
                 request.startTime(),
                 request.endTime(),
                 workMinutes,
                 overtimeMinutes);
 
-        repository.save(record);
+        boolean updated = repository.save(record);
+
+        String message = updated
+                ? "同じ勤務日・氏名の勤怠を上書きしました。"
+                : "勤怠をCSVへ保存しました。";
 
         return new AttendanceResponse(
                 workMinutes,
                 overtimeMinutes,
-                "勤怠をCSVへ保存しました。");
+                message);
     }
 }
