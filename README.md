@@ -3,7 +3,7 @@
 Javaの学習を目的に開発している、個人向けの勤怠管理・給与計算システムです。
 
 現在は、従来のコンソール版（CLI）と、Spring Bootを使用したWeb版が同じリポジトリにあります。  
-CLI版には給与計算や月間集計まで実装済みです。Web版は基本設定、勤怠登録API、CSV保存まで対応しています。
+CLI版には給与計算や月間集計まで実装済みです。Web版は基本設定、勤怠登録、給与計算、CSV保存まで対応しています。
 
 ## 開発の背景
 
@@ -23,7 +23,7 @@ CLI版には給与計算や月間集計まで実装済みです。Web版は基�
 | CSVへの保存 | ✅ | ✅ |
 | 同じ日付・氏名の記録を上書き | ✅ | ✅ |
 | 氏名・時給・休憩時間などの設定 | ✅ | ✅ |
-| 基本給与・残業手当の計算 | ✅ | 未対応 |
+| 基本給与・残業手当の計算 | ✅ | ✅ |
 | 月間集計 | ✅ | 未対応 |
 | 自動テスト | 簡易テストあり | ✅ |
 
@@ -35,7 +35,8 @@ CLI版には給与計算や月間集計まで実装済みです。Web版は基�
 - 氏名、時給、標準労働時間、休憩時間を画面から設定
 - 保存した標準労働時間と休憩時間で勤怠を計算
 - 実働時間と残業時間を計算
-- 登録結果を画面に表示
+- 時給を使って基本給与・残業手当・支給金額を計算
+- 登録前の確認と登録結果を画面に表示
 - POST APIを通じて `data/attendance.csv` に保存
 - 同じ勤務日・氏名の記録は新しい内容で上書き
 - 不正な入力に対してJSON形式のエラーメッセージを返却
@@ -83,6 +84,9 @@ Content-Type: application/json
 {
   "workMinutes": 480,
   "overtimeMinutes": 0,
+  "basePay": 9600,
+  "overtimePay": 0,
+  "totalPay": 9600,
   "message": "勤怠をCSVへ保存しました。"
 }
 ```
@@ -92,8 +96,8 @@ Content-Type: application/json
 `data/attendance.csv` に次の形式で追記します。
 
 ```csv
-employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes
-山田太郎,2026-07-27,09:00,18:00,480,0
+employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes,basePay,overtimePay,totalPay
+山田太郎,2026-07-27,09:00,18:00,480,0,9600,0,9600
 ```
 
 同じ勤務日・氏名を再登録すると、以前の行を新しい内容へ上書きします。
@@ -187,7 +191,7 @@ CLI版とWeb版は現在別々の処理として動作しており、保存先�
 | CLI設定 | `config.csv` | 氏名、時給、契約労働時間、標準休憩時間 |
 | CLI勤怠 | `worklog.csv` | 日付、氏名、実働時間、残業時間、基本給与、残業手当 |
 | Web設定 | `data/settings.csv` | 氏名、時給、標準労働時間、休憩時間 |
-| Web勤怠 | `data/attendance.csv` | 氏名、勤務日、出勤時刻、退勤時刻、実働時間、残業時間 |
+| Web勤怠 | `data/attendance.csv` | 氏名、勤務日、出退勤時刻、実働・残業時間、基本給与、残業手当、支給金額 |
 
 ## テスト
 
@@ -214,7 +218,7 @@ TestRunner: 5 tests passed
 
 ### Web版のテスト状況
 
-CSVの上書き保存とWeb基本設定の保存・入力チェックにJUnitテストを追加しています。Controllerの自動テストは今後追加予定です。
+CSVの上書き保存、Web基本設定、基本給与・残業手当の計算にJUnitテストを追加しています。Controllerの自動テストは今後追加予定です。
 
 ## 主な構成
 
@@ -239,12 +243,14 @@ src/main/java/
     │   ├── AppSettings.java
     │   ├── AttendanceRecord.java
     │   ├── AttendanceRequest.java
-    │   └── AttendanceResponse.java
+    │   ├── AttendanceResponse.java
+    │   └── PayrollCalculation.java
     ├── repository/
     │   ├── AttendanceCsvRepository.java
     │   └── SettingsCsvRepository.java
     └── service/
         ├── AttendanceService.java
+        ├── PayrollCalculator.java
         └── SettingsService.java
 
 src/main/resources/static/
@@ -255,7 +261,6 @@ src/main/resources/static/
 
 ## 現在の制限
 
-- Web版では時給を設定できますが、給与・残業手当の計算にはまだ使用していません
 - Web版では月間集計を表示できません
 - CLI版とWeb版の処理およびCSVはまだ統合されていません
 - 選択できる対象月は今月と前月のみです
@@ -266,9 +271,8 @@ src/main/resources/static/
 ## 次に取り組むこと
 
 1. Web APIのController・Serviceテストを充実させる
-2. Web版の時給設定を給与計算へ連携する
-3. CLI版とWeb版の給与計算処理を統合する
-4. 月間の残業時間と支給金額をWeb画面へ表示する
+2. CLI版とWeb版の給与計算処理を統合する
+3. 月間の残業時間と支給金額をWeb画面へ表示する
 
 ## 注意事項
 

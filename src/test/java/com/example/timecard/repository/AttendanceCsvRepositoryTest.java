@@ -19,27 +19,40 @@ class AttendanceCsvRepositoryTest {
     @TempDir
     Path tempDir;
 
+    private AttendanceRecord record(
+            String employeeName,
+            LocalDate workDate,
+            LocalTime startTime,
+            LocalTime endTime) {
+        return new AttendanceRecord(
+                employeeName,
+                workDate,
+                startTime,
+                endTime,
+                480,
+                0,
+                9600,
+                0,
+                9600);
+    }
+
     @Test
     void sameEmployeeAndDateIsOverwritten() throws Exception {
         Path csvPath = tempDir.resolve("attendance.csv");
         AttendanceCsvRepository repository =
                 new AttendanceCsvRepository(csvPath);
 
-        AttendanceRecord first = new AttendanceRecord(
+        AttendanceRecord first = record(
                 "山田太郎",
                 LocalDate.of(2026, 7, 29),
                 LocalTime.of(9, 0),
-                LocalTime.of(18, 0),
-                480,
-                0);
+                LocalTime.of(18, 0));
 
-        AttendanceRecord replacement = new AttendanceRecord(
+        AttendanceRecord replacement = record(
                 "山田太郎",
                 LocalDate.of(2026, 7, 29),
                 LocalTime.of(10, 0),
-                LocalTime.of(19, 0),
-                480,
-                0);
+                LocalTime.of(19, 0));
 
         assertThat(repository.save(first)).isFalse();
         assertThat(repository.save(replacement)).isTrue();
@@ -48,8 +61,8 @@ class AttendanceCsvRepositoryTest {
                 csvPath, StandardCharsets.UTF_8);
 
         assertThat(lines).containsExactly(
-                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes",
-                "山田太郎,2026-07-29,10:00,19:00,480,0");
+                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes,basePay,overtimePay,totalPay",
+                "山田太郎,2026-07-29,10:00,19:00,480,0,9600,0,9600");
     }
 
     @Test
@@ -58,29 +71,25 @@ class AttendanceCsvRepositoryTest {
         AttendanceCsvRepository repository =
                 new AttendanceCsvRepository(csvPath);
 
-        repository.save(new AttendanceRecord(
+        repository.save(record(
                 "山田太郎",
                 LocalDate.of(2026, 7, 29),
                 LocalTime.of(9, 0),
-                LocalTime.of(18, 0),
-                480,
-                0));
+                LocalTime.of(18, 0)));
 
-        repository.save(new AttendanceRecord(
+        repository.save(record(
                 "佐藤花子",
                 LocalDate.of(2026, 7, 29),
                 LocalTime.of(8, 30),
-                LocalTime.of(17, 30),
-                480,
-                0));
+                LocalTime.of(17, 30)));
 
         List<String> lines = Files.readAllLines(
                 csvPath, StandardCharsets.UTF_8);
 
         assertThat(lines).hasSize(3);
         assertThat(lines).contains(
-                "山田太郎,2026-07-29,09:00,18:00,480,0",
-                "佐藤花子,2026-07-29,08:30,17:30,480,0");
+                "山田太郎,2026-07-29,09:00,18:00,480,0,9600,0,9600",
+                "佐藤花子,2026-07-29,08:30,17:30,480,0,9600,0,9600");
     }
 
     @Test
@@ -95,20 +104,18 @@ class AttendanceCsvRepositoryTest {
         AttendanceCsvRepository repository =
                 new AttendanceCsvRepository(csvPath);
 
-        repository.save(new AttendanceRecord(
+        repository.save(record(
                 "山田太郎",
                 LocalDate.of(2026, 7, 29),
                 LocalTime.of(9, 0),
-                LocalTime.of(18, 0),
-                480,
-                0));
+                LocalTime.of(18, 0)));
 
         List<String> lines = Files.readAllLines(
                 csvPath, StandardCharsets.UTF_8);
 
         assertThat(lines).containsExactly(
-                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes",
-                ",2026-07-28,09:00,18:00,480,0",
-                "山田太郎,2026-07-29,09:00,18:00,480,0");
+                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes,basePay,overtimePay,totalPay",
+                ",2026-07-28,09:00,18:00,480,0,0,0,0",
+                "山田太郎,2026-07-29,09:00,18:00,480,0,9600,0,9600");
     }
 }

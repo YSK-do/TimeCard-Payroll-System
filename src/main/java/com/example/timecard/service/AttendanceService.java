@@ -8,6 +8,7 @@ import com.example.timecard.domain.AppSettings;
 import com.example.timecard.domain.AttendanceRecord;
 import com.example.timecard.domain.AttendanceRequest;
 import com.example.timecard.domain.AttendanceResponse;
+import com.example.timecard.domain.PayrollCalculation;
 import com.example.timecard.repository.AttendanceCsvRepository;
 import com.example.timecard.repository.SettingsCsvRepository;
 
@@ -16,12 +17,15 @@ public class AttendanceService {
 
     private final AttendanceCsvRepository repository;
     private final SettingsCsvRepository settingsRepository;
+    private final PayrollCalculator payrollCalculator;
 
     public AttendanceService(
             AttendanceCsvRepository repository,
-            SettingsCsvRepository settingsRepository) {
+            SettingsCsvRepository settingsRepository,
+            PayrollCalculator payrollCalculator) {
         this.repository = repository;
         this.settingsRepository = settingsRepository;
+        this.payrollCalculator = payrollCalculator;
     }
 
     public AttendanceResponse register(AttendanceRequest request) {
@@ -60,13 +64,21 @@ public class AttendanceService {
                 0,
                 workMinutes - settings.standardWorkMinutes());
 
+        PayrollCalculation payroll = payrollCalculator.calculate(
+                workMinutes,
+                overtimeMinutes,
+                settings.hourlyWage());
+
         AttendanceRecord record = new AttendanceRecord(
                 settings.employeeName(),
                 request.workDate(),
                 request.startTime(),
                 request.endTime(),
                 workMinutes,
-                overtimeMinutes);
+                overtimeMinutes,
+                payroll.basePay(),
+                payroll.overtimePay(),
+                payroll.totalPay());
 
         boolean updated = repository.save(record);
 
@@ -77,6 +89,9 @@ public class AttendanceService {
         return new AttendanceResponse(
                 workMinutes,
                 overtimeMinutes,
+                payroll.basePay(),
+                payroll.overtimePay(),
+                payroll.totalPay(),
                 message);
     }
 }

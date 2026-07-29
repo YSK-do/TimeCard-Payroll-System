@@ -9,5 +9,8 @@ public record AttendanceRecord(
         LocalTime startTime,
         LocalTime endTime,
         long workMinutes,
-        long overtimeMinutes) {
+        long overtimeMinutes,
+        long basePay,
+        long overtimePay,
+        long totalPay) {
 }

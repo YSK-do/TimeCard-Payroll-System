@@ -26,11 +26,41 @@ function formatDuration(totalMinutes) {
     : `${hours}<span>時間</span>${minutes}<span>分</span>`;
 }
 
-function showSummary(workMinutes, overtimeMinutes) {
+function formatCurrency(amount) {
+  return amount.toLocaleString("ja-JP");
+}
+
+function calculatePayroll(workMinutes, overtimeMinutes) {
+  const basePay = Math.floor(
+    workMinutes * currentSettings.hourlyWage / 60
+  );
+  const overtimePay = Math.floor(
+    overtimeMinutes * currentSettings.hourlyWage * 25 / (60 * 100)
+  );
+  return {
+    basePay,
+    overtimePay,
+    totalPay: basePay + overtimePay
+  };
+}
+
+function showSummary(
+  workMinutes,
+  overtimeMinutes,
+  basePay,
+  overtimePay,
+  totalPay
+) {
   document.querySelector("#work-hours").innerHTML =
     formatDuration(workMinutes);
   document.querySelector("#overtime-hours").innerHTML =
     formatDuration(overtimeMinutes);
+  document.querySelector("#base-pay").textContent =
+    `${formatCurrency(basePay)}円`;
+  document.querySelector("#overtime-pay").textContent =
+    `${formatCurrency(overtimePay)}円`;
+  document.querySelector("#payment").textContent =
+    `${formatCurrency(totalPay)}円`;
 }
 
 function showActiveSettings(settings) {
@@ -65,10 +95,19 @@ function refreshSummary() {
     return false;
   }
 
+  const overtimeMinutes = Math.max(
+    0,
+    workMinutes - currentSettings.standardWorkMinutes
+  );
+  const payroll = calculatePayroll(workMinutes, overtimeMinutes);
+
   errorMessage.hidden = true;
   showSummary(
     workMinutes,
-    Math.max(0, workMinutes - currentSettings.standardWorkMinutes)
+    overtimeMinutes,
+    payroll.basePay,
+    payroll.overtimePay,
+    payroll.totalPay
   );
   return true;
 }
@@ -184,7 +223,13 @@ attendanceForm.addEventListener("submit", async (event) => {
       throw new Error(result.message || "勤怠の登録に失敗しました。");
     }
 
-    showSummary(result.workMinutes, result.overtimeMinutes);
+    showSummary(
+      result.workMinutes,
+      result.overtimeMinutes,
+      result.basePay,
+      result.overtimePay,
+      result.totalPay
+    );
     errorMessage.hidden = true;
     saveStatus.textContent = `✓ ${result.message}`;
     saveStatus.hidden = false;
