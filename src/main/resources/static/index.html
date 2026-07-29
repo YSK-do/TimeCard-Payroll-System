@@ -124,6 +124,25 @@
         <p id="save-status" class="save-status" hidden></p>
       </section>
 
+      <section class="monthly-card" aria-labelledby="monthly-title" aria-live="polite">
+        <div class="summary-heading">
+          <span class="check-icon" aria-hidden="true">Σ</span>
+          <div>
+            <h2 id="monthly-title">月間集計</h2>
+            <p id="monthly-label">対象月の合計</p>
+          </div>
+        </div>
+        <dl>
+          <div><dt>勤務日数</dt><dd id="monthly-work-days">0<span>日</span></dd></div>
+          <div><dt>実働時間</dt><dd id="monthly-work-hours">0<span>時間</span></dd></div>
+          <div><dt>残業時間</dt><dd id="monthly-overtime-hours">0<span>時間</span></dd></div>
+          <div><dt>基本給与</dt><dd id="monthly-base-pay">0円</dd></div>
+          <div><dt>残業手当</dt><dd id="monthly-overtime-pay">0円</dd></div>
+          <div class="payment"><dt>支給金額</dt><dd id="monthly-total-pay">0円</dd></div>
+        </dl>
+        <p id="monthly-error" class="form-message error" role="alert" hidden></p>
+      </section>
+
       <p class="help-text">登録した設定と勤怠はCSVファイルに保存されます</p>
     </main>
 

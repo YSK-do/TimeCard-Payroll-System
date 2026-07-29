@@ -207,3 +207,46 @@ footer { padding: 22px; color: #a0acb6; border-top: 1px solid #e6ecef; text-alig
   .settings-grid { grid-template-columns: 1fr; }
   .settings-grid .full-width { grid-column: auto; }
 }
+
+
+.monthly-card {
+  margin-top: 22px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #e3ebf1;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(35, 63, 86, .07);
+}
+
+.monthly-card .summary-heading p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.monthly-card dl {
+  margin: 0;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px 0;
+}
+
+.monthly-card dl > div {
+  padding: 2px 18px;
+  text-align: center;
+  border-right: 1px solid var(--line);
+}
+
+.monthly-card dl > div:nth-child(3n) { border-right: 0; }
+.monthly-card dt { margin-bottom: 8px; color: #758698; font-size: 12px; }
+.monthly-card dd { margin: 0; color: var(--navy); font-size: 22px; font-weight: 750; }
+.monthly-card dd span { margin-left: 4px; font-size: 12px; font-weight: 500; }
+.monthly-card .payment dd { color: var(--blue); }
+.monthly-card .form-message { margin: 0 24px 24px; text-align: center; }
+
+@media (max-width: 560px) {
+  .monthly-card dl { grid-template-columns: repeat(2, 1fr); padding: 22px 10px; }
+  .monthly-card dl > div:nth-child(3n) { border-right: 1px solid var(--line); }
+  .monthly-card dl > div:nth-child(2n) { border-right: 0; }
+}

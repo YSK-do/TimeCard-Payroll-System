@@ -129,6 +129,7 @@ async function loadSettings() {
 
   if (settings.employeeName) {
     refreshSummary();
+    await loadMonthlySummary();
   }
 }
 
@@ -163,11 +164,53 @@ settingsForm.addEventListener("submit", async (event) => {
     settingsStatus.textContent = "✓ 基本設定を保存しました。";
     settingsStatus.hidden = false;
     refreshSummary();
+    await loadMonthlySummary();
   } catch (error) {
     settingsError.textContent = error.message;
     settingsError.hidden = false;
   }
 });
+
+function selectedYearMonth() {
+  return dateInput.min.slice(0, 7);
+}
+
+async function loadMonthlySummary() {
+  if (!currentSettings || !currentSettings.employeeName) {
+    return;
+  }
+
+  const monthlyError = document.querySelector("#monthly-error");
+  monthlyError.hidden = true;
+
+  try {
+    const response = await fetch(
+      `/api/attendances/summary?month=${selectedYearMonth()}`
+    );
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.message || "月間集計の読み込みに失敗しました。");
+    }
+
+    document.querySelector("#monthly-label").textContent =
+      `${result.month} の合計`;
+    document.querySelector("#monthly-work-days").innerHTML =
+      `${result.workDays}<span>日</span>`;
+    document.querySelector("#monthly-work-hours").innerHTML =
+      formatDuration(result.workMinutes);
+    document.querySelector("#monthly-overtime-hours").innerHTML =
+      formatDuration(result.overtimeMinutes);
+    document.querySelector("#monthly-base-pay").textContent =
+      `${formatCurrency(result.basePay)}円`;
+    document.querySelector("#monthly-overtime-pay").textContent =
+      `${formatCurrency(result.overtimePay)}円`;
+    document.querySelector("#monthly-total-pay").textContent =
+      `${formatCurrency(result.totalPay)}円`;
+  } catch (error) {
+    monthlyError.textContent = error.message;
+    monthlyError.hidden = false;
+  }
+}
 
 function updateMonthRange() {
   const today = new Date();
@@ -192,7 +235,10 @@ function updateMonthRange() {
   }
 }
 
-monthSelect.addEventListener("change", updateMonthRange);
+monthSelect.addEventListener("change", () => {
+  updateMonthRange();
+  loadMonthlySummary();
+});
 startInput.addEventListener("change", refreshSummary);
 endInput.addEventListener("change", refreshSummary);
 updateMonthRange();
@@ -233,6 +279,7 @@ attendanceForm.addEventListener("submit", async (event) => {
     errorMessage.hidden = true;
     saveStatus.textContent = `✓ ${result.message}`;
     saveStatus.hidden = false;
+    await loadMonthlySummary();
   } catch (error) {
     errorMessage.textContent = error.message;
     errorMessage.hidden = false;
