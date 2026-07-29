@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.example.timecard.domain.AttendanceRecord;
+import com.example.timecard.domain.MonthlySummary;
 
 @Repository
 public class AttendanceCsvRepository {
@@ -51,10 +54,7 @@ public class AttendanceCsvRepository {
             if (Files.exists(csvPath)) {
                 for (String line : Files.readAllLines(
                         csvPath, StandardCharsets.UTF_8)) {
-                    if (line.isBlank()
-                            || line.equals(HEADER)
-                            || line.equals(NAME_HEADER)
-                            || line.equals(OLD_HEADER)) {
+                    if (isHeaderOrBlank(line)) {
                         continue;
                     }
 
@@ -85,6 +85,68 @@ public class AttendanceCsvRepository {
                     "勤怠CSVの保存に失敗しました。",
                     exception);
         }
+    }
+
+    public synchronized MonthlySummary summarize(
+            String employeeName, YearMonth month) {
+        int workDays = 0;
+        long workMinutes = 0;
+        long overtimeMinutes = 0;
+        long basePay = 0;
+        long overtimePay = 0;
+        long totalPay = 0;
+
+        if (!Files.exists(csvPath)) {
+            return new MonthlySummary(
+                    month.toString(), 0, 0, 0, 0, 0, 0);
+        }
+
+        try {
+            for (String line : Files.readAllLines(
+                    csvPath, StandardCharsets.UTF_8)) {
+                if (isHeaderOrBlank(line)) {
+                    continue;
+                }
+
+                String[] values = migrateOldRow(line).split(",", -1);
+                if (values.length != 9
+                        || !values[0].equals(employeeName)) {
+                    continue;
+                }
+
+                LocalDate workDate = LocalDate.parse(values[1]);
+                if (!YearMonth.from(workDate).equals(month)) {
+                    continue;
+                }
+
+                workDays++;
+                workMinutes += Long.parseLong(values[4]);
+                overtimeMinutes += Long.parseLong(values[5]);
+                basePay += Long.parseLong(values[6]);
+                overtimePay += Long.parseLong(values[7]);
+                totalPay += Long.parseLong(values[8]);
+            }
+        } catch (IOException | RuntimeException exception) {
+            throw new IllegalStateException(
+                    "勤怠CSVの月間集計に失敗しました。",
+                    exception);
+        }
+
+        return new MonthlySummary(
+                month.toString(),
+                workDays,
+                workMinutes,
+                overtimeMinutes,
+                basePay,
+                overtimePay,
+                totalPay);
+    }
+
+    private boolean isHeaderOrBlank(String line) {
+        return line.isBlank()
+                || line.equals(HEADER)
+                || line.equals(NAME_HEADER)
+                || line.equals(OLD_HEADER);
     }
 
     private String migrateOldRow(String line) {
