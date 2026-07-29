@@ -31,7 +31,10 @@ class AttendanceCsvRepositoryTest {
                 LocalTime.of(9, 0),
                 LocalTime.of(18, 0),
                 480,
-                0);
+                0,
+                9600,
+                0,
+                9600);
 
         AttendanceRecord replacement = new AttendanceRecord(
                 "山田太郎",
@@ -39,7 +42,10 @@ class AttendanceCsvRepositoryTest {
                 LocalTime.of(10, 0),
                 LocalTime.of(19, 0),
                 480,
-                0);
+                0,
+                9600,
+                0,
+                9600);
 
         assertThat(repository.save(first)).isFalse();
         assertThat(repository.save(replacement)).isTrue();
@@ -48,8 +54,8 @@ class AttendanceCsvRepositoryTest {
                 csvPath, StandardCharsets.UTF_8);
 
         assertThat(lines).containsExactly(
-                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes",
-                "山田太郎,2026-07-29,10:00,19:00,480,0");
+                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes,basePay,overtimePay,totalPay",
+                "山田太郎,2026-07-29,10:00,19:00,480,0,9600,0,9600");
     }
 
     @Test
@@ -80,7 +86,7 @@ class AttendanceCsvRepositoryTest {
         assertThat(lines).hasSize(3);
         assertThat(lines).contains(
                 "山田太郎,2026-07-29,09:00,18:00,480,0",
-                "佐藤花子,2026-07-29,08:30,17:30,480,0");
+                "佐藤花子,2026-07-29,08:30,17:30,480,0,9600,0,9600");
     }
 
     @Test
@@ -107,8 +113,8 @@ class AttendanceCsvRepositoryTest {
                 csvPath, StandardCharsets.UTF_8);
 
         assertThat(lines).containsExactly(
-                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes",
-                ",2026-07-28,09:00,18:00,480,0",
-                "山田太郎,2026-07-29,09:00,18:00,480,0");
+                "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes,basePay,overtimePay,totalPay",
+                ",2026-07-28,09:00,18:00,480,0,0,0,0",
+                "山田太郎,2026-07-29,09:00,18:00,480,0,9600,0,9600");
     }
 }
