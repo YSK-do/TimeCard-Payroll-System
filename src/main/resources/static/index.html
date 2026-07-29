@@ -45,6 +45,18 @@
 
         <form id="attendance-form">
           <div class="field full-width">
+            <label for="employee-name">氏名</label>
+            <div class="input-with-icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5"></circle>
+                <path d="M5.5 20c.5-4 2.7-6 6.5-6s6 2 6.5 6"></path>
+              </svg>
+              <input id="employee-name" name="employeeName" type="text"
+                     maxlength="50" autocomplete="name" required>
+            </div>
+          </div>
+
+          <div class="field full-width">
             <label for="target-month">対象月</label>
             <div class="select-wrap">
               <select id="target-month" name="targetMonth">
