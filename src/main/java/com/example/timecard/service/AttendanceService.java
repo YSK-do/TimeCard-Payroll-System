@@ -4,38 +4,39 @@ import java.time.Duration;
 
 import org.springframework.stereotype.Service;
 
+import com.example.timecard.domain.AppSettings;
 import com.example.timecard.domain.AttendanceRecord;
 import com.example.timecard.domain.AttendanceRequest;
 import com.example.timecard.domain.AttendanceResponse;
 import com.example.timecard.repository.AttendanceCsvRepository;
+import com.example.timecard.repository.SettingsCsvRepository;
 
 @Service
 public class AttendanceService {
 
-    private static final long BREAK_MINUTES = 60;
-    private static final long STANDARD_WORK_MINUTES = 8 * 60;
-
     private final AttendanceCsvRepository repository;
+    private final SettingsCsvRepository settingsRepository;
 
-    public AttendanceService(AttendanceCsvRepository repository) {
+    public AttendanceService(
+            AttendanceCsvRepository repository,
+            SettingsCsvRepository settingsRepository) {
         this.repository = repository;
+        this.settingsRepository = settingsRepository;
     }
 
     public AttendanceResponse register(AttendanceRequest request) {
-        if (request.employeeName() == null
-                || request.employeeName().isBlank()
-                || request.workDate() == null
+        if (request.workDate() == null
                 || request.startTime() == null
                 || request.endTime() == null) {
             throw new IllegalArgumentException(
-                    "氏名、勤務日、出退勤時刻を入力してください。");
+                    "勤務日と出退勤時刻を入力してください。");
         }
 
-        String employeeName = request.employeeName().trim();
+        AppSettings settings = settingsRepository.load();
 
-        if (employeeName.contains(",")) {
+        if (settings.employeeName().isBlank()) {
             throw new IllegalArgumentException(
-                    "氏名にカンマは使用できません。");
+                    "先に基本設定を保存してください。");
         }
 
         long elapsedMinutes = Duration.between(
@@ -47,18 +48,20 @@ public class AttendanceService {
                     "退勤時刻は出勤時刻より後にしてください。");
         }
 
-        long workMinutes = elapsedMinutes - BREAK_MINUTES;
+        long workMinutes =
+                elapsedMinutes - settings.breakMinutes();
 
         if (workMinutes < 0) {
             throw new IllegalArgumentException(
                     "勤務時間は休憩時間より長くしてください。");
         }
 
-        long overtimeMinutes =
-                Math.max(0, workMinutes - STANDARD_WORK_MINUTES);
+        long overtimeMinutes = Math.max(
+                0,
+                workMinutes - settings.standardWorkMinutes());
 
         AttendanceRecord record = new AttendanceRecord(
-                employeeName,
+                settings.employeeName(),
                 request.workDate(),
                 request.startTime(),
                 request.endTime(),
