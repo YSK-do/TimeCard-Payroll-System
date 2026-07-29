@@ -118,4 +118,38 @@ class AttendanceCsvRepositoryTest {
                 ",2026-07-28,09:00,18:00,480,0,0,0,0",
                 "山田太郎,2026-07-29,09:00,18:00,480,0,9600,0,9600");
     }
+
+    @Test
+    void summarizesOnlyRequestedEmployeeAndMonth() {
+        Path csvPath = tempDir.resolve("attendance.csv");
+        AttendanceCsvRepository repository =
+                new AttendanceCsvRepository(csvPath);
+
+        repository.save(new AttendanceRecord(
+                "山田太郎", LocalDate.of(2026, 7, 1),
+                LocalTime.of(9, 0), LocalTime.of(18, 0),
+                480, 0, 9600, 0, 9600));
+        repository.save(new AttendanceRecord(
+                "山田太郎", LocalDate.of(2026, 7, 2),
+                LocalTime.of(9, 0), LocalTime.of(19, 0),
+                540, 60, 10800, 300, 11100));
+        repository.save(new AttendanceRecord(
+                "山田太郎", LocalDate.of(2026, 6, 30),
+                LocalTime.of(9, 0), LocalTime.of(18, 0),
+                480, 0, 9600, 0, 9600));
+        repository.save(new AttendanceRecord(
+                "佐藤花子", LocalDate.of(2026, 7, 1),
+                LocalTime.of(9, 0), LocalTime.of(18, 0),
+                480, 0, 9600, 0, 9600));
+
+        var summary = repository.summarize(
+                "山田太郎", java.time.YearMonth.of(2026, 7));
+
+        assertThat(summary.workDays()).isEqualTo(2);
+        assertThat(summary.workMinutes()).isEqualTo(1020);
+        assertThat(summary.overtimeMinutes()).isEqualTo(60);
+        assertThat(summary.basePay()).isEqualTo(20400);
+        assertThat(summary.overtimePay()).isEqualTo(300);
+        assertThat(summary.totalPay()).isEqualTo(20700);
+    }
 }
