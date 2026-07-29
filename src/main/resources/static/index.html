@@ -104,6 +104,18 @@
             </div>
           </div>
 
+          <fieldset class="break-check">
+            <legend>今日の休憩はしっかり取れましたか？</legend>
+            <label>
+              <input type="radio" name="tookBreak" value="yes" required>
+              <span>はい</span>
+            </label>
+            <label>
+              <input type="radio" name="tookBreak" value="no">
+              <span>いいえ</span>
+            </label>
+          </fieldset>
+
           <p id="form-error" class="form-message error" role="alert" hidden></p>
           <button class="submit-button" type="submit">✓ 勤怠を登録する</button>
         </form>
@@ -122,6 +134,10 @@
           <div class="payment"><dt>支給金額</dt><dd id="payment">―円</dd></div>
         </dl>
         <p id="save-status" class="save-status" hidden></p>
+        <div id="break-card" class="break-card" role="status" hidden>
+          <strong>みんなくろうカード</strong>
+          <p id="break-message"></p>
+        </div>
       </section>
 
       <section class="monthly-card" aria-labelledby="monthly-title" aria-live="polite">
