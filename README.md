@@ -25,21 +25,41 @@ CLI版には給与計算や月間集計まで実装済みです。Web版は基�
 | 氏名・時給・休憩時間などの設定 | ✅ | ✅ |
 | 基本給与・残業手当の計算 | ✅ | 未対応 |
 | 月間集計 | ✅ | 未対応 |
-| 自動テスト | 簡易テストあり | 未対応 |
+| 自動テスト | 簡易テストあり | ✅ |
 
 ## Web版で現在できること
 
 ブラウザ画面から勤務日、出勤時刻、退勤時刻を入力して勤怠を登録できます。
 
 - 対象月は今月または前月を選択
-- 休憩時間は60分で固定
-- 標準労働時間は8時間で固定
+- 氏名、時給、標準労働時間、休憩時間を画面から設定
+- 保存した標準労働時間と休憩時間で勤怠を計算
 - 実働時間と残業時間を計算
 - 登録結果を画面に表示
-- POST APIを通じて `data/attendance.csv` に保存\n- 同じ勤務日・氏名の記録は新しい内容で上書き
+- POST APIを通じて `data/attendance.csv` に保存
+- 同じ勤務日・氏名の記録は新しい内容で上書き
 - 不正な入力に対してJSON形式のエラーメッセージを返却
 
-### API
+### 基本設定API
+
+```http
+GET /api/settings
+PUT /api/settings
+Content-Type: application/json
+```
+
+設定は `data/settings.csv` に保存します。
+
+```json
+{
+  "employeeName": "山田太郎",
+  "hourlyWage": 1200,
+  "standardWorkMinutes": 480,
+  "breakMinutes": 60
+}
+```
+
+### 勤怠登録API
 
 ```http
 POST /api/attendances
@@ -166,7 +186,8 @@ CLI版とWeb版は現在別々の処理として動作しており、保存先�
 | --- | --- | --- |
 | CLI設定 | `config.csv` | 氏名、時給、契約労働時間、標準休憩時間 |
 | CLI勤怠 | `worklog.csv` | 日付、氏名、実働時間、残業時間、基本給与、残業手当 |
-| Web設定 | `data/settings.csv` | 氏名、時給、標準労働時間、休憩時間 |\n| Web勤怠 | `data/attendance.csv` | 氏名、勤務日、出勤時刻、退勤時刻、実働時間、残業時間 |
+| Web設定 | `data/settings.csv` | 氏名、時給、標準労働時間、休憩時間 |
+| Web勤怠 | `data/attendance.csv` | 氏名、勤務日、出勤時刻、退勤時刻、実働時間、残業時間 |
 
 ## テスト
 
@@ -212,15 +233,19 @@ src/main/java/
     ├── TimeCardApplication.java
     ├── controller/
     │   ├── AttendanceController.java
+    │   ├── SettingsController.java
     │   └── ApiExceptionHandler.java
     ├── domain/
+    │   ├── AppSettings.java
     │   ├── AttendanceRecord.java
     │   ├── AttendanceRequest.java
     │   └── AttendanceResponse.java
     ├── repository/
-    │   └── AttendanceCsvRepository.java
+    │   ├── AttendanceCsvRepository.java
+    │   └── SettingsCsvRepository.java
     └── service/
-        └── AttendanceService.java
+        ├── AttendanceService.java
+        └── SettingsService.java
 
 src/main/resources/static/
 ├── index.html
@@ -230,7 +255,6 @@ src/main/resources/static/
 
 ## 現在の制限
 
-- Web版の休憩時間は60分、標準労働時間は8時間で固定です
 - Web版では時給を設定できますが、給与・残業手当の計算にはまだ使用していません
 - Web版では月間集計を表示できません
 - CLI版とWeb版の処理およびCSVはまだ統合されていません
@@ -241,9 +265,9 @@ src/main/resources/static/
 
 ## 次に取り組むこと
 
-1. Web APIの自動テストを追加する
-2. `config.csv` の設定をWeb版から利用できるようにする
-3. CLI版の給与計算処理をWeb版へ統合する
+1. Web APIのController・Serviceテストを充実させる
+2. Web版の時給設定を給与計算へ連携する
+3. CLI版とWeb版の給与計算処理を統合する
 4. 月間の残業時間と支給金額をWeb画面へ表示する
 
 ## 注意事項
