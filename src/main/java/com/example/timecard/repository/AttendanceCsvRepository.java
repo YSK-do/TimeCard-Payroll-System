@@ -18,6 +18,9 @@ public class AttendanceCsvRepository {
             Path.of("data", "attendance.csv");
 
     private static final String HEADER =
+            "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes,basePay,overtimePay,totalPay";
+
+    private static final String NAME_HEADER =
             "employeeName,workDate,startTime,endTime,workMinutes,overtimeMinutes";
 
     private static final String OLD_HEADER =
@@ -50,6 +53,7 @@ public class AttendanceCsvRepository {
                         csvPath, StandardCharsets.UTF_8)) {
                     if (line.isBlank()
                             || line.equals(HEADER)
+                            || line.equals(NAME_HEADER)
                             || line.equals(OLD_HEADER)) {
                         continue;
                     }
@@ -58,7 +62,7 @@ public class AttendanceCsvRepository {
                     String[] values = migratedLine.split(",", -1);
 
                     boolean sameEmployeeAndDate =
-                            values.length == 6
+                            values.length == 9
                             && values[0].equals(record.employeeName())
                             && values[1].equals(
                                     record.workDate().toString());
@@ -86,7 +90,10 @@ public class AttendanceCsvRepository {
     private String migrateOldRow(String line) {
         String[] values = line.split(",", -1);
         if (values.length == 5) {
-            return "," + line;
+            return "," + line + ",0,0,0";
+        }
+        if (values.length == 6) {
+            return line + ",0,0,0";
         }
         return line;
     }
@@ -98,6 +105,9 @@ public class AttendanceCsvRepository {
                 record.startTime().toString(),
                 record.endTime().toString(),
                 Long.toString(record.workMinutes()),
-                Long.toString(record.overtimeMinutes()));
+                Long.toString(record.overtimeMinutes()),
+                Long.toString(record.basePay()),
+                Long.toString(record.overtimePay()),
+                Long.toString(record.totalPay()));
     }
 }
