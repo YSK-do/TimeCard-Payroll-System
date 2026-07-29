@@ -10,6 +10,8 @@ const startInput = document.querySelector("#start-time");
 const endInput = document.querySelector("#end-time");
 const errorMessage = document.querySelector("#form-error");
 const saveStatus = document.querySelector("#save-status");
+const breakCard = document.querySelector("#break-card");
+const breakMessage = document.querySelector("#break-message");
 
 let currentSettings = null;
 
@@ -61,6 +63,22 @@ function showSummary(
     `${formatCurrency(overtimePay)}円`;
   document.querySelector("#payment").textContent =
     `${formatCurrency(totalPay)}円`;
+}
+
+function showBreakMessage() {
+  const selectedBreak = attendanceForm.querySelector(
+    'input[name="tookBreak"]:checked'
+  );
+
+  if (selectedBreak.value === "yes") {
+    breakMessage.textContent =
+      "素晴らしい！体調管理バッチリですね。明日もその調子で！";
+  } else {
+    breakMessage.textContent =
+      "今日もお疲れ様でした。無理しすぎず、ゆっくり休んでくださいね。";
+  }
+
+  breakCard.hidden = false;
 }
 
 function showActiveSettings(settings) {
@@ -251,6 +269,7 @@ attendanceForm.addEventListener("submit", async (event) => {
   }
 
   saveStatus.hidden = true;
+  breakCard.hidden = true;
 
   try {
     const response = await fetch("/api/attendances", {
@@ -279,6 +298,7 @@ attendanceForm.addEventListener("submit", async (event) => {
     errorMessage.hidden = true;
     saveStatus.textContent = `✓ ${result.message}`;
     saveStatus.hidden = false;
+    showBreakMessage();
     await loadMonthlySummary();
   } catch (error) {
     errorMessage.textContent = error.message;
