@@ -1,0 +1,68 @@
+.month-history-controls {
+  display: grid;
+  grid-template-columns: auto minmax(150px, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.month-history-controls button {
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--blue);
+  font-weight: 700;
+  background: var(--blue-soft);
+  border: 1px solid #b9d7ea;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.month-history-controls button:hover {
+  background: #e2f1fa;
+}
+
+.month-history-controls input[type="month"] {
+  padding: 0 12px;
+}
+
+.month-history-controls .export-month-button {
+  color: white;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.past-edit-setting {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: #f7fafc;
+  border: 1px solid #e0e9f0;
+  border-radius: 7px;
+}
+
+.past-edit-setting label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.past-edit-setting input {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+}
+
+.past-edit-setting p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 560px) {
+  .month-history-controls {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .month-history-controls input[type="month"],
+  .month-history-controls .export-month-button {
+    grid-column: 1 / -1;
+  }
+}
