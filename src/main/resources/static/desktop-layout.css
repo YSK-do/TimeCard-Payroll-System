@@ -1,0 +1,75 @@
+@media (min-width: 900px) {
+  main {
+    width: min(100% - 64px, 1120px);
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr);
+    gap: 24px;
+    align-items: start;
+    padding-top: 42px;
+  }
+
+  .intro,
+  .settings-card,
+  .monthly-dashboard,
+  .help-text {
+    grid-column: 1 / -1;
+  }
+
+  .intro {
+    margin-bottom: 6px;
+  }
+
+  .settings-card {
+    margin-bottom: 0;
+  }
+
+  .attendance-card,
+  .summary-card {
+    margin-top: 0;
+    height: 100%;
+  }
+
+  .summary-card {
+    position: sticky;
+    top: 24px;
+  }
+
+  .summary-card dl {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px 0;
+  }
+
+  .summary-card dl > div {
+    border-right: 1px solid var(--line);
+  }
+
+  .summary-card dl > div:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .summary-card dl > div:last-child {
+    grid-column: 1 / -1;
+    border-right: 0;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+  }
+
+  .settings-grid {
+    grid-template-columns: 1.2fr repeat(3, 1fr);
+  }
+
+  .settings-grid .full-width:first-child {
+    grid-column: span 1;
+  }
+
+  .settings-grid .preference-field {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1200px) {
+  main {
+    width: min(100% - 80px, 1240px);
+    grid-template-columns: minmax(0, 1.25fr) minmax(380px, .75fr);
+  }
+}
