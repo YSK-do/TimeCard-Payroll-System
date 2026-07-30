@@ -36,16 +36,22 @@ function selectedDayForMonth(monthText) {
   return `${monthText}-${String(day).padStart(2, "0")}`;
 }
 
+function updateNavigationState() {
+  historyNextButton.disabled = historyMonthInput.value >= currentMonthText();
+}
+
 function moveToMonth(monthText) {
   if (!/^\d{4}-\d{2}$/.test(monthText)) {
     return;
   }
 
-  historyMonthInput.value = monthText;
-  historyDateInput.value = selectedDayForMonth(monthText);
+  const safeMonth = monthText > currentMonthText() ? currentMonthText() : monthText;
+  historyMonthInput.value = safeMonth;
+  historyDateInput.value = selectedDayForMonth(safeMonth);
   historyDateInput.dispatchEvent(new Event("change", { bubbles: true }));
   updatePastEditState();
-  historyStatus.textContent = `${monthText} の勤務・給与履歴を表示しています。`;
+  updateNavigationState();
+  historyStatus.textContent = `${safeMonth} の勤務・給与履歴を表示しています。`;
 }
 
 function updatePastEditState() {
@@ -139,6 +145,7 @@ historyDateInput.addEventListener("change", () => {
     historyMonthInput.value = monthText;
   }
   updatePastEditState();
+  updateNavigationState();
 });
 
 allowPastEditInput.checked = localStorage.getItem(ALLOW_PAST_EDIT_KEY) === "true";
