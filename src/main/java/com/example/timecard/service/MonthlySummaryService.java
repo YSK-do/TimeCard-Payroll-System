@@ -1,5 +1,6 @@
 package com.example.timecard.service;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.timecard.domain.AppSettings;
+import com.example.timecard.domain.AttendanceRecord;
 import com.example.timecard.domain.MonthlySummary;
 import com.example.timecard.repository.AttendanceCsvRepository;
 import com.example.timecard.repository.SettingsCsvRepository;
@@ -38,6 +40,20 @@ public class MonthlySummaryService {
 
         return attendanceRepository.findRegisteredDates(
                 settings.employeeName(), month);
+    }
+
+    public AttendanceRecord getByDate(String dateText) {
+        final LocalDate date;
+        try {
+            date = LocalDate.parse(dateText);
+        } catch (DateTimeParseException | NullPointerException exception) {
+            throw new IllegalArgumentException(
+                    "勤務日はYYYY-MM-DD形式で指定してください。");
+        }
+
+        AppSettings settings = loadSettings();
+        return attendanceRepository.findByDate(settings.employeeName(), date)
+                .orElse(null);
     }
 
     private YearMonth parseMonth(String monthText) {

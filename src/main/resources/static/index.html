@@ -12,6 +12,7 @@
     <script src="ui-improvements.js" defer></script>
     <script src="input-controls.js" defer></script>
     <script src="break-preference.js" defer></script>
+    <script src="monthly-dashboard.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -39,14 +40,46 @@
         <div class="card-heading"><div class="heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect><path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path></svg></div><div><h2 id="form-title">勤務時間を入力</h2><p id="active-settings">先に基本設定を保存してください</p></div></div>
         <form id="attendance-form">
           <div class="field full-width"><label for="target-month">対象月</label><div class="select-wrap"><select id="target-month" name="targetMonth"><option value="current">今月</option><option value="previous">前月</option></select></div></div>
-          <div class="field full-width"><label for="work-date">勤務日</label><input id="work-date" name="workDate" type="date" required><p class="input-help">PCは直接入力、スマートフォンはカレンダーから選択できます</p></div>
+          <div class="field full-width"><label for="work-date">勤務日</label><input id="work-date" name="workDate" type="date" required><p class="input-help">下の月間カレンダーからも選択できます</p></div>
           <div class="time-fields"><div class="field"><label for="start-time">出勤時刻</label><input id="start-time" name="startTime" type="time" value="09:00" required><p class="input-help">PCは0900入力、スマートフォンは時間ピッカーを利用できます</p></div><div class="field"><label for="end-time">退勤時刻</label><input id="end-time" name="endTime" type="time" value="18:00" required><p class="input-help">PCは1800入力、スマートフォンは時間ピッカーを利用できます</p></div></div>
           <fieldset id="break-check-field" class="break-check"><legend>今日の休憩はしっかり取れましたか？ <span class="optional-label">任意</span></legend><p class="break-purpose">体調管理を振り返るための質問です。給与計算には使用しません。</p><label><input type="radio" name="tookBreak" value="yes" checked><span>はい</span></label><label><input type="radio" name="tookBreak" value="no"><span>いいえ</span></label></fieldset>
           <p id="form-error" class="form-message error" role="alert" hidden></p><button class="submit-button" type="submit">✓ 勤怠を登録する</button>
         </form>
       </section>
       <section class="summary-card" aria-labelledby="summary-title" aria-live="polite"><div class="summary-heading"><span class="check-icon" aria-hidden="true">✓</span><h2 id="summary-title">今回の登録結果</h2></div><dl><div><dt>実働時間</dt><dd id="work-hours">—<span>時間</span></dd></div><div><dt>残業時間</dt><dd id="overtime-hours">—<span>時間</span></dd></div><div><dt>基本給与</dt><dd id="base-pay">—円</dd></div><div><dt>残業手当</dt><dd id="overtime-pay">—円</dd></div><div class="payment"><dt>支給金額</dt><dd id="payment">—円</dd></div></dl><p id="save-status" class="save-status" hidden></p><div id="break-card" class="break-card" role="status" hidden><strong>みんなくろうカード</strong><p id="break-message"></p></div></section>
-      <section class="monthly-card" aria-labelledby="monthly-title" aria-live="polite"><div class="summary-heading"><span class="check-icon" aria-hidden="true">Σ</span><div><h2 id="monthly-title">月間集計</h2><p id="monthly-label">対象月の合計</p></div></div><dl><div><dt>勤務日数</dt><dd id="monthly-work-days">0<span>日</span></dd></div><div><dt>実働時間</dt><dd id="monthly-work-hours">0<span>時間</span></dd></div><div><dt>残業時間</dt><dd id="monthly-overtime-hours">0<span>時間</span></dd></div><div><dt>基本給与</dt><dd id="monthly-base-pay">0円</dd></div><div><dt>残業手当</dt><dd id="monthly-overtime-pay">0円</dd></div><div class="payment"><dt>支給金額</dt><dd id="monthly-total-pay">0円</dd></div></dl><p id="monthly-error" class="form-message error" role="alert" hidden></p></section>
+
+      <section class="monthly-dashboard" aria-labelledby="monthly-title" aria-live="polite">
+        <div class="monthly-dashboard-heading">
+          <div><p class="eyebrow">MONTHLY OVERVIEW</p><h2 id="monthly-title">月間集計</h2><p id="monthly-label">対象月の合計</p></div>
+          <div class="monthly-top-metrics">
+            <div><span>勤務日数</span><strong id="monthly-work-days">0<span>日</span></strong></div>
+            <div><span>実働時間</span><strong id="monthly-work-hours">0<span>時間</span></strong></div>
+            <div><span>残業時間</span><strong id="monthly-overtime-hours">0<span>時間</span></strong></div>
+          </div>
+        </div>
+        <div class="monthly-dashboard-main">
+          <div id="monthly-calendar-slot" class="monthly-calendar-panel"></div>
+          <article class="daily-detail-panel" aria-labelledby="daily-detail-title">
+            <div class="daily-detail-heading"><div><span>選択日の勤務内容</span><h3 id="daily-detail-title">日付を選択してください</h3></div><span id="daily-detail-status" class="daily-detail-status">未選択</span></div>
+            <dl id="daily-detail-values" class="daily-detail-values">
+              <div><dt>出勤</dt><dd id="daily-start-time">—</dd></div>
+              <div><dt>退勤</dt><dd id="daily-end-time">—</dd></div>
+              <div><dt>実働</dt><dd id="daily-work-time">—</dd></div>
+              <div><dt>残業</dt><dd id="daily-overtime-time">—</dd></div>
+              <div><dt>基本給与</dt><dd id="daily-base-pay">—円</dd></div>
+              <div><dt>残業手当</dt><dd id="daily-overtime-pay">—円</dd></div>
+              <div class="daily-total"><dt>支給金額</dt><dd id="daily-total-pay">—円</dd></div>
+            </dl>
+            <p id="daily-detail-message" class="daily-detail-message">カレンダーの日付を押すと、その日の勤務内容を表示します。</p>
+          </article>
+        </div>
+        <div class="monthly-payment-summary">
+          <div><span>基本給与</span><strong id="monthly-base-pay">0円</strong></div>
+          <div><span>残業手当</span><strong id="monthly-overtime-pay">0円</strong></div>
+          <div class="monthly-total"><span>支給金額</span><strong id="monthly-total-pay">0円</strong></div>
+        </div>
+        <p id="monthly-error" class="form-message error" role="alert" hidden></p>
+      </section>
       <p class="help-text">登録した設定と勤怠はCSVファイルに保存されます</p>
     </main>
     <footer>© 2026 TimeCard Payroll System</footer>

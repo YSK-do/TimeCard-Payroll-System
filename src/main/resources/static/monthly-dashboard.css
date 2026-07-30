@@ -1,0 +1,256 @@
+.monthly-dashboard {
+  margin-top: 22px;
+  overflow: hidden;
+  background: white;
+  border: 1px solid #e3ebf1;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(35, 63, 86, .07);
+}
+
+.monthly-dashboard-heading {
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  background: #f1f8fc;
+  border-bottom: 1px solid #e0edf5;
+}
+
+.monthly-dashboard-heading .eyebrow {
+  margin-bottom: 5px;
+}
+
+.monthly-dashboard-heading h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 19px;
+}
+
+.monthly-dashboard-heading > div > p:last-child {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.monthly-top-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(92px, 1fr));
+  gap: 8px;
+}
+
+.monthly-top-metrics > div {
+  min-width: 100px;
+  padding: 10px 12px;
+  background: white;
+  border: 1px solid #dce7ef;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.monthly-top-metrics span,
+.monthly-payment-summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.monthly-top-metrics strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--navy);
+  font-size: 17px;
+}
+
+.monthly-top-metrics strong span {
+  display: inline;
+  margin-left: 3px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.monthly-dashboard-main {
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(300px, 1.15fr) minmax(240px, .85fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.monthly-calendar-panel .work-calendar {
+  height: 100%;
+  margin-top: 0;
+}
+
+.daily-detail-panel {
+  padding: 20px;
+  background: #fbfcfd;
+  border: 1px solid #dce7ef;
+  border-radius: 10px;
+}
+
+.daily-detail-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e3ebf1;
+}
+
+.daily-detail-heading span:first-child {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.daily-detail-heading h3 {
+  margin: 4px 0 0;
+  color: var(--navy);
+  font-size: 16px;
+}
+
+.daily-detail-status {
+  flex: none;
+  padding: 5px 8px;
+  color: #6d7e8e;
+  background: #edf1f4;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.daily-detail-status.is-registered {
+  color: #28734a;
+  background: #e4f5ea;
+}
+
+.daily-detail-values {
+  margin: 0;
+  padding: 15px 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.daily-detail-values > div {
+  padding: 10px 11px;
+  background: white;
+  border: 1px solid #e3ebf1;
+  border-radius: 7px;
+}
+
+.daily-detail-values dt {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.daily-detail-values dd {
+  margin: 5px 0 0;
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.daily-detail-values .daily-total {
+  grid-column: 1 / -1;
+  background: var(--blue-soft);
+  border-color: #bad7e9;
+}
+
+.daily-detail-values .daily-total dd {
+  color: var(--blue);
+  font-size: 20px;
+}
+
+.daily-detail-message {
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.monthly-payment-summary {
+  padding: 0 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.monthly-payment-summary > div {
+  padding: 17px;
+  background: #f8fafc;
+  border: 1px solid #e1e8ee;
+  border-radius: 9px;
+  text-align: center;
+}
+
+.monthly-payment-summary strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--navy);
+  font-size: 21px;
+}
+
+.monthly-payment-summary .monthly-total {
+  background: var(--blue-soft);
+  border-color: #b8d7ea;
+}
+
+.monthly-payment-summary .monthly-total strong {
+  color: var(--blue);
+  font-size: 25px;
+}
+
+.monthly-dashboard > .form-message {
+  margin: 0 24px 24px;
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .monthly-dashboard-heading {
+    flex-direction: column;
+  }
+
+  .monthly-top-metrics {
+    width: 100%;
+  }
+
+  .monthly-dashboard-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .monthly-dashboard-heading,
+  .monthly-dashboard-main {
+    padding: 18px 14px;
+  }
+
+  .monthly-top-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .monthly-top-metrics > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .monthly-top-metrics strong {
+    margin-top: 0;
+  }
+
+  .daily-detail-values,
+  .monthly-payment-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .monthly-payment-summary {
+    padding: 0 14px 18px;
+  }
+
+  .daily-detail-values .daily-total {
+    grid-column: auto;
+  }
+}

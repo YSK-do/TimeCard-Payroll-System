@@ -42,13 +42,14 @@ const calendarSettingsStatus = document.querySelector("#settings-status");
 
 if (calendarDateInput && calendarMonthSelect) {
   const dateField = calendarDateInput.closest(".field");
+  const calendarSlot = document.querySelector("#monthly-calendar-slot");
   const calendarSection = document.createElement("section");
   calendarSection.className = "work-calendar";
   calendarSection.setAttribute("aria-labelledby", "work-calendar-title");
   calendarSection.innerHTML = `
     <div class="work-calendar-heading">
       <div>
-        <strong id="work-calendar-title">勤務日を選択</strong>
+        <strong id="work-calendar-title">月間カレンダー</strong>
         <span id="work-calendar-month"></span>
       </div>
       <div class="work-calendar-legend" aria-label="カレンダーの凡例">
@@ -62,7 +63,12 @@ if (calendarDateInput && calendarMonthSelect) {
     <div id="work-calendar-grid" class="work-calendar-grid"></div>
     <p id="work-calendar-status" class="work-calendar-status" aria-live="polite"></p>
   `;
-  dateField.parentElement.insertBefore(calendarSection, dateField);
+
+  if (calendarSlot) {
+    calendarSlot.appendChild(calendarSection);
+  } else {
+    dateField.parentElement.insertBefore(calendarSection, dateField);
+  }
 
   const monthLabel = calendarSection.querySelector("#work-calendar-month");
   const calendarGrid = calendarSection.querySelector("#work-calendar-grid");
@@ -117,6 +123,7 @@ if (calendarDateInput && calendarMonthSelect) {
       button.type = "button";
       button.className = "calendar-day";
       button.textContent = day;
+      button.dataset.date = dateText;
       button.setAttribute("aria-label", `${year}年${month}月${day}日`);
 
       if (dateText === todayText) {
@@ -135,20 +142,34 @@ if (calendarDateInput && calendarMonthSelect) {
         calendarDateInput.value = dateText;
         calendarDateInput.dispatchEvent(new Event("change", { bubbles: true }));
         calendarStatus.textContent = `${year}年${month}月${day}日を選択しました。`;
+        document.dispatchEvent(new CustomEvent("timecard:calendar-date-selected", {
+          detail: { date: dateText, registered: registeredDates.has(dateText) }
+        }));
         renderWorkCalendar();
         if (calendarStartInput) {
-          calendarStartInput.focus();
+          calendarStartInput.focus({ preventScroll: true });
         }
       });
 
       calendarGrid.appendChild(button);
     }
+
+    document.dispatchEvent(new CustomEvent("timecard:calendar-rendered", {
+      detail: { month: monthText, registeredDates: [...registeredDates] }
+    }));
   }
 
   calendarMonthSelect.addEventListener("change", () => {
     window.setTimeout(renderWorkCalendar, 0);
   });
-  calendarDateInput.addEventListener("change", renderWorkCalendar);
+  calendarDateInput.addEventListener("change", () => {
+    renderWorkCalendar();
+    if (calendarDateInput.value) {
+      document.dispatchEvent(new CustomEvent("timecard:calendar-date-selected", {
+        detail: { date: calendarDateInput.value }
+      }));
+    }
+  });
 
   [calendarSaveStatus, calendarSettingsStatus].forEach((statusElement) => {
     if (!statusElement) {
