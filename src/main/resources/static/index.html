@@ -6,7 +6,9 @@
     <meta name="description" content="勤務条件を設定し、毎日の勤怠を登録できる画面です。">
     <title>勤怠管理 | TimeCard</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="input-controls.css">
     <script src="app.js" defer></script>
+    <script src="input-controls.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -44,19 +46,34 @@
               </div>
               <div class="field">
                 <label for="hourly-wage">時給（円）</label>
-                <input id="hourly-wage" name="hourlyWage" type="number"
-                       min="1" step="1" value="1200" required>
+                <div class="number-control" data-number-control>
+                  <button class="number-step-button" type="button" data-action="decrease" aria-label="時給を1円減らす">−</button>
+                  <input id="hourly-wage" name="hourlyWage" type="number"
+                         min="1" step="1" value="1200" inputmode="numeric" required>
+                  <button class="number-step-button" type="button" data-action="increase" aria-label="時給を1円増やす">＋</button>
+                </div>
+                <p class="input-help">直接入力または−／＋で調整できます</p>
               </div>
               <div class="field">
                 <label for="standard-work-hours">1日の標準労働時間（時間）</label>
-                <input id="standard-work-hours" name="standardWorkHours"
-                       type="number" min="0.25" max="24" step="0.25"
-                       value="8" required>
+                <div class="number-control" data-number-control>
+                  <button class="number-step-button" type="button" data-action="decrease" aria-label="標準労働時間を15分減らす">−</button>
+                  <input id="standard-work-hours" name="standardWorkHours"
+                         type="number" min="0.25" max="24" step="0.25"
+                         value="8" inputmode="decimal" required>
+                  <button class="number-step-button" type="button" data-action="increase" aria-label="標準労働時間を15分増やす">＋</button>
+                </div>
+                <p class="input-help">0.25時間（15分）単位で調整できます</p>
               </div>
               <div class="field">
                 <label for="break-minutes">休憩時間（分）</label>
-                <input id="break-minutes" name="breakMinutes" type="number"
-                       min="0" max="1439" step="1" value="60" required>
+                <div class="number-control" data-number-control>
+                  <button class="number-step-button" type="button" data-action="decrease" aria-label="休憩時間を5分減らす">−</button>
+                  <input id="break-minutes" name="breakMinutes" type="number"
+                         min="0" max="1439" step="5" value="60" inputmode="numeric" required>
+                  <button class="number-step-button" type="button" data-action="increase" aria-label="休憩時間を5分増やす">＋</button>
+                </div>
+                <p class="input-help">5分単位で調整できます</p>
               </div>
             </div>
             <p id="settings-error" class="form-message error" role="alert" hidden></p>
@@ -97,10 +114,12 @@
             <div class="field">
               <label for="start-time">出勤時刻</label>
               <input id="start-time" name="startTime" type="time" value="09:00" required>
+              <p class="input-help">PCは直接入力、スマートフォンはピッカーを利用できます</p>
             </div>
             <div class="field">
               <label for="end-time">退勤時刻</label>
               <input id="end-time" name="endTime" type="time" value="18:00" required>
+              <p class="input-help">PCは直接入力、スマートフォンはピッカーを利用できます</p>
             </div>
           </div>
 
