@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.timecard.domain.AttendanceRecord;
 import com.example.timecard.domain.AttendanceRequest;
 import com.example.timecard.domain.AttendanceResponse;
 import com.example.timecard.domain.MonthlySummary;
@@ -48,5 +49,11 @@ public class AttendanceController {
     public List<String> registeredDates(
             @RequestParam String month) {
         return monthlySummaryService.getRegisteredDates(month);
+    }
+
+    @GetMapping("/detail")
+    public AttendanceRecord detail(
+            @RequestParam String date) {
+        return monthlySummaryService.getByDate(date);
     }
 }
