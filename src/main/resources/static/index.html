@@ -6,7 +6,9 @@
     <meta name="description" content="勤務条件を設定し、毎日の勤怠を登録できる画面です。">
     <title>勤怠管理 | TimeCard</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="work-calendar.css">
     <script src="app.js" defer></script>
+    <script src="work-calendar.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -88,8 +90,17 @@
             </div>
           </div>
 
+          <div class="work-calendar-card" aria-labelledby="work-calendar-title">
+            <div class="work-calendar-heading">
+              <strong id="work-calendar-title">勤務日を選択</strong>
+              <small>日付を押すと入力欄へ反映されます</small>
+            </div>
+            <div id="work-calendar" class="work-calendar"></div>
+            <p class="calendar-legend">緑の印は、このブラウザで登録した日です</p>
+          </div>
+
           <div class="field full-width">
-            <label for="work-date">勤務日</label>
+            <label for="work-date">選択中の勤務日</label>
             <input id="work-date" name="workDate" type="date" required>
           </div>
 
