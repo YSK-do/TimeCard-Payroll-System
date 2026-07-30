@@ -5,9 +5,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -175,6 +177,44 @@ public class AttendanceCsvRepository {
         }
 
         return registeredDates;
+    }
+
+    public synchronized Optional<AttendanceRecord> findByDate(
+            String employeeName, LocalDate workDate) {
+        if (!Files.exists(csvPath)) {
+            return Optional.empty();
+        }
+
+        try {
+            for (String line : Files.readAllLines(
+                    csvPath, StandardCharsets.UTF_8)) {
+                if (isHeaderOrBlank(line)) {
+                    continue;
+                }
+
+                String[] values = migrateOldRow(line).split(",", -1);
+                if (values.length == 9
+                        && values[0].equals(employeeName)
+                        && values[1].equals(workDate.toString())) {
+                    return Optional.of(new AttendanceRecord(
+                            values[0],
+                            LocalDate.parse(values[1]),
+                            LocalTime.parse(values[2]),
+                            LocalTime.parse(values[3]),
+                            Long.parseLong(values[4]),
+                            Long.parseLong(values[5]),
+                            Long.parseLong(values[6]),
+                            Long.parseLong(values[7]),
+                            Long.parseLong(values[8])));
+                }
+            }
+        } catch (IOException | RuntimeException exception) {
+            throw new IllegalStateException(
+                    "選択日の勤怠読み込みに失敗しました。",
+                    exception);
+        }
+
+        return Optional.empty();
     }
 
     private boolean isHeaderOrBlank(String line) {
