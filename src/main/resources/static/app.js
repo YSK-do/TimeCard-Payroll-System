@@ -14,6 +14,7 @@ const breakCard = document.querySelector("#break-card");
 const breakMessage = document.querySelector("#break-message");
 
 let currentSettings = null;
+let currentYearMonth = "";
 
 function minutesFromTime(value) {
   const [hours, minutes] = value.split(":").map(Number);
@@ -175,7 +176,7 @@ settingsForm.addEventListener("submit", async (event) => {
 });
 
 function selectedYearMonth() {
-  return dateInput.min.slice(0, 7);
+  return currentYearMonth;
 }
 
 async function loadMonthlySummary() {
@@ -215,34 +216,60 @@ async function loadMonthlySummary() {
   }
 }
 
-function updateMonthRange() {
+function yearMonthFor(offset) {
   const today = new Date();
-  const selectedMonth = new Date(
-    today.getFullYear(),
-    today.getMonth() - (monthSelect.value === "previous" ? 1 : 0),
-    1
-  );
-  const year = selectedMonth.getFullYear();
-  const month = String(selectedMonth.getMonth() + 1).padStart(2, "0");
-  const finalDay = new Date(year, selectedMonth.getMonth() + 1, 0).getDate();
+  const target = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+  const year = target.getFullYear();
+  const month = String(target.getMonth() + 1).padStart(2, "0");
+  return `${year}-${month}`;
+}
 
-  dateInput.min = `${year}-${month}-01`;
-  dateInput.max = `${year}-${month}-${finalDay}`;
+function setCurrentMonth(yearMonth, preferredDay) {
+  currentYearMonth = yearMonth;
 
-  if (!dateInput.value.startsWith(`${year}-${month}`)) {
-    const day = monthSelect.value === "current"
-      ? Math.min(today.getDate(), finalDay)
-      : finalDay;
-    dateInput.value =
-      `${year}-${month}-${String(day).padStart(2, "0")}`;
+  const [year, month] = yearMonth.split("-").map(Number);
+  const finalDay = new Date(year, month, 0).getDate();
+  const day = Math.min(preferredDay, finalDay);
+
+  dateInput.min = `${yearMonth}-01`;
+  dateInput.max = `${yearMonth}-${String(finalDay).padStart(2, "0")}`;
+  dateInput.value = `${yearMonth}-${String(day).padStart(2, "0")}`;
+}
+
+function updateMonthFromSelect() {
+  const today = new Date();
+  const offset = monthSelect.value === "previous" ? -1 : 0;
+  const preferredDay = offset === 0 ? today.getDate() : 1;
+  setCurrentMonth(yearMonthFor(offset), preferredDay);
+}
+
+function updateSelectFromDate() {
+  const selectedYearMonth = dateInput.value.slice(0, 7);
+  const currentMonth = yearMonthFor(0);
+  const previousMonth = yearMonthFor(-1);
+
+  if (selectedYearMonth === currentMonth) {
+    monthSelect.value = "current";
+  } else if (selectedYearMonth === previousMonth) {
+    monthSelect.value = "previous";
+  } else {
+    return;
   }
+
+  currentYearMonth = selectedYearMonth;
 }
 
 monthSelect.addEventListener("change", () => {
-  updateMonthRange();
+  updateMonthFromSelect();
   loadMonthlySummary();
 });
-updateMonthRange();
+
+dateInput.addEventListener("change", () => {
+  updateSelectFromDate();
+  loadMonthlySummary();
+});
+
+updateMonthFromSelect();
 
 attendanceForm.addEventListener("submit", async (event) => {
   event.preventDefault();
