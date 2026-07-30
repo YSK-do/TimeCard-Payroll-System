@@ -7,6 +7,7 @@
     <title>勤怠管理 | TimeCard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
+    <script src="break-preference.js" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -58,6 +59,15 @@
                 <input id="break-minutes" name="breakMinutes" type="number"
                        min="0" max="1439" step="1" value="60" required>
               </div>
+              <div class="field full-width preference-field">
+                <label class="preference-toggle" for="show-break-question">
+                  <input id="show-break-question" type="checkbox" checked>
+                  <span>
+                    <strong>休憩確認を勤務入力画面に表示する</strong>
+                    <small>給与計算には使用しない任意の体調管理メモです。</small>
+                  </span>
+                </label>
+              </div>
             </div>
             <p id="settings-error" class="form-message error" role="alert" hidden></p>
             <p id="settings-status" class="save-status" hidden></p>
@@ -105,9 +115,10 @@
           </div>
 
           <fieldset class="break-check">
-            <legend>今日の休憩はしっかり取れましたか？</legend>
+            <legend>今日の休憩はしっかり取れましたか？（任意）</legend>
+            <p class="break-purpose">回答は給与計算には使わず、登録後の労いメッセージだけに使用します。</p>
             <label>
-              <input type="radio" name="tookBreak" value="yes" required>
+              <input type="radio" name="tookBreak" value="yes">
               <span>はい</span>
             </label>
             <label>
