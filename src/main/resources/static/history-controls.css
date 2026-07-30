@@ -1,0 +1,92 @@
+.history-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 12px;
+  background: #f6f9fb;
+  border: 1px solid #dce6ed;
+  border-radius: 10px;
+}
+
+.history-toolbar label {
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.history-toolbar input[type="month"] {
+  width: auto;
+  min-width: 150px;
+  height: 40px;
+}
+
+.history-toolbar button {
+  min-height: 40px;
+  padding: 0 12px;
+  color: var(--navy);
+  background: white;
+  border: 1px solid #cddae4;
+  border-radius: 7px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.history-toolbar button:hover {
+  background: #eef6fb;
+  border-color: #7caed0;
+}
+
+.history-toolbar button:disabled {
+  cursor: wait;
+  opacity: .6;
+}
+
+.history-edit-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  padding: 8px 10px;
+  background: #fff8e7;
+  border-radius: 7px;
+}
+
+.history-edit-toggle input {
+  width: auto;
+}
+
+.history-status,
+.history-edit-message {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.history-edit-message {
+  padding: 10px 12px;
+  color: #805d12;
+  background: #fff7df;
+  border: 1px solid #eed99a;
+  border-radius: 7px;
+}
+
+@media (max-width: 640px) {
+  .history-toolbar {
+    align-items: stretch;
+  }
+
+  .history-toolbar > * {
+    flex: 1 1 130px;
+  }
+
+  .history-toolbar label[for="history-month"] {
+    flex-basis: 100%;
+  }
+
+  .history-edit-toggle {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+}
