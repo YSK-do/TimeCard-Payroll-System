@@ -1,5 +1,7 @@
 package com.example.timecard.controller;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,5 +42,11 @@ public class AttendanceController {
     public MonthlySummary summary(
             @RequestParam String month) {
         return monthlySummaryService.get(month);
+    }
+
+    @GetMapping("/dates")
+    public List<String> registeredDates(
+            @RequestParam String month) {
+        return monthlySummaryService.getRegisteredDates(month);
     }
 }

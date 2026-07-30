@@ -142,6 +142,41 @@ public class AttendanceCsvRepository {
                 totalPay);
     }
 
+    public synchronized List<String> findRegisteredDates(
+            String employeeName, YearMonth month) {
+        List<String> registeredDates = new ArrayList<>();
+
+        if (!Files.exists(csvPath)) {
+            return registeredDates;
+        }
+
+        try {
+            for (String line : Files.readAllLines(
+                    csvPath, StandardCharsets.UTF_8)) {
+                if (isHeaderOrBlank(line)) {
+                    continue;
+                }
+
+                String[] values = migrateOldRow(line).split(",", -1);
+                if (values.length != 9
+                        || !values[0].equals(employeeName)) {
+                    continue;
+                }
+
+                LocalDate workDate = LocalDate.parse(values[1]);
+                if (YearMonth.from(workDate).equals(month)) {
+                    registeredDates.add(workDate.toString());
+                }
+            }
+        } catch (IOException | RuntimeException exception) {
+            throw new IllegalStateException(
+                    "登録済み勤務日の読み込みに失敗しました。",
+                    exception);
+        }
+
+        return registeredDates;
+    }
+
     private boolean isHeaderOrBlank(String line) {
         return line.isBlank()
                 || line.equals(HEADER)
