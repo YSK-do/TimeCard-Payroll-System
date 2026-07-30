@@ -12,8 +12,11 @@ const errorMessage = document.querySelector("#form-error");
 const saveStatus = document.querySelector("#save-status");
 const breakCard = document.querySelector("#break-card");
 const breakMessage = document.querySelector("#break-message");
+const attendanceSubmitButton = attendanceForm.querySelector("button[type='submit']");
+const attendanceSubmitButtonText = attendanceSubmitButton.textContent;
 
 let currentSettings = null;
+let attendanceButtonResetTimer = null;
 
 function minutesFromTime(value) {
   const [hours, minutes] = value.split(":").map(Number);
@@ -251,6 +254,11 @@ attendanceForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (attendanceButtonResetTimer) {
+    clearTimeout(attendanceButtonResetTimer);
+  }
+  attendanceSubmitButton.disabled = true;
+  attendanceSubmitButton.textContent = "登録中...";
   saveStatus.hidden = true;
   breakCard.hidden = true;
 
@@ -281,11 +289,20 @@ attendanceForm.addEventListener("submit", async (event) => {
     errorMessage.hidden = true;
     saveStatus.textContent = `✓ ${result.message}`;
     saveStatus.hidden = false;
+    attendanceSubmitButton.textContent = "✓ 登録済み";
     showBreakMessage();
     await loadMonthlySummary();
+
+    attendanceButtonResetTimer = setTimeout(() => {
+      attendanceSubmitButton.textContent = attendanceSubmitButtonText;
+      attendanceSubmitButton.disabled = false;
+      attendanceButtonResetTimer = null;
+    }, 2000);
   } catch (error) {
     errorMessage.textContent = error.message;
     errorMessage.hidden = false;
+    attendanceSubmitButton.textContent = attendanceSubmitButtonText;
+    attendanceSubmitButton.disabled = false;
   }
 });
 
