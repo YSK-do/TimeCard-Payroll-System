@@ -1,0 +1,70 @@
+.number-control {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: stretch;
+}
+
+.number-control input {
+  height: 48px;
+  padding: 0 10px;
+  border-radius: 0;
+  text-align: center;
+  appearance: textfield;
+}
+
+.number-control input::-webkit-inner-spin-button,
+.number-control input::-webkit-outer-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.number-step-button {
+  min-width: 44px;
+  color: var(--blue);
+  background: var(--blue-soft);
+  border: 1px solid #cdd9e3;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.number-step-button:first-child {
+  border-right: 0;
+  border-radius: 7px 0 0 7px;
+}
+
+.number-step-button:last-child {
+  border-left: 0;
+  border-radius: 0 7px 7px 0;
+}
+
+.number-step-button:hover {
+  background: #e2f1fa;
+}
+
+.number-step-button:focus-visible,
+.number-control input:focus {
+  position: relative;
+  z-index: 1;
+  outline: none;
+  border-color: #4792c9;
+  box-shadow: 0 0 0 3px rgba(53, 137, 196, .13);
+}
+
+.input-help {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+@media (pointer: coarse) {
+  input[type="date"],
+  input[type="time"] {
+    cursor: pointer;
+  }
+
+  .number-step-button {
+    min-width: 48px;
+  }
+}
