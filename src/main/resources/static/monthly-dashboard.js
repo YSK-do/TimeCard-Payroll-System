@@ -1,3 +1,8 @@
+const dashboardStyle = document.createElement("link");
+dashboardStyle.rel = "stylesheet";
+dashboardStyle.href = "monthly-dashboard.css";
+document.head.appendChild(dashboardStyle);
+
 const dailyDetailTitle = document.querySelector("#daily-detail-title");
 const dailyDetailStatus = document.querySelector("#daily-detail-status");
 const dailyDetailMessage = document.querySelector("#daily-detail-message");
