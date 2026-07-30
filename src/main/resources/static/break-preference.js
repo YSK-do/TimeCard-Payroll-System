@@ -10,11 +10,9 @@ function applyBreakQuestionVisibility() {
   breakQuestion.hidden = !shouldShow;
   localStorage.setItem(BREAK_VISIBILITY_KEY, String(shouldShow));
 
-  if (!shouldShow) {
-    breakAnswerInputs.forEach((input) => {
-      input.required = false;
-    });
-  }
+  breakAnswerInputs.forEach((input) => {
+    input.required = false;
+  });
 }
 
 function restoreBreakPreference() {
@@ -33,6 +31,26 @@ function restoreBreakPreference() {
 
   applyBreakQuestionVisibility();
 }
+
+window.showBreakMessage = function () {
+  const selectedBreak = document.querySelector(
+    'input[name="tookBreak"]:checked'
+  );
+  const breakCardElement = document.querySelector("#break-card");
+  const breakMessageElement = document.querySelector("#break-message");
+
+  if (!selectedBreak || !breakVisibilityInput.checked) {
+    breakCardElement.hidden = true;
+    return;
+  }
+
+  localStorage.setItem(BREAK_ANSWER_KEY, selectedBreak.value);
+
+  breakMessageElement.textContent = selectedBreak.value === "yes"
+    ? "素晴らしい！体調管理バッチリですね。明日もその調子で！"
+    : "今日もお疲れ様でした。無理しすぎず、ゆっくり休んでくださいね。";
+  breakCardElement.hidden = false;
+};
 
 breakVisibilityInput.addEventListener("change", applyBreakQuestionVisibility);
 
