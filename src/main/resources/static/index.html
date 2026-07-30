@@ -11,179 +11,44 @@
     <script src="keyboard-entry.js" defer></script>
     <script src="ui-improvements.js" defer></script>
     <script src="input-controls.js" defer></script>
+    <script src="break-preference.js" defer></script>
   </head>
   <body>
     <header class="site-header">
-      <a class="brand" href="#" aria-label="TimeCard ホーム">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"></circle><path d="M12 7.5V12l3 1.75"></path></svg>
-        </span>
-        <span>TimeCard</span>
-      </a>
+      <a class="brand" href="#" aria-label="TimeCard ホーム"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.25"></circle><path d="M12 7.5V12l3 1.75"></path></svg></span><span>TimeCard</span></a>
       <p>かんたん勤怠管理</p>
     </header>
-
     <main>
-      <section class="intro" aria-labelledby="page-title">
-        <p class="eyebrow">DAILY ATTENDANCE</p>
-        <h1 id="page-title">勤怠管理</h1>
-        <p>勤務条件を設定して、毎日の勤怠を登録しましょう。</p>
-      </section>
-
+      <section class="intro" aria-labelledby="page-title"><p class="eyebrow">DAILY ATTENDANCE</p><h1 id="page-title">勤怠管理</h1><p>勤務条件を設定して、毎日の勤怠を登録しましょう。</p></section>
       <section class="settings-card" aria-labelledby="settings-title">
         <details open>
-          <summary>
-            <span>
-              <strong id="settings-title">基本設定</strong>
-              <small>氏名・時給・労働時間・休憩時間</small>
-            </span>
-            <span class="summary-action" aria-live="polite">▲ 基本設定を閉じる</span>
-          </summary>
+          <summary><span><strong id="settings-title">基本設定</strong><small>氏名・時給・労働時間・休憩時間</small></span><span class="summary-action" aria-live="polite">▲ 基本設定を閉じる</span></summary>
           <form id="settings-form">
             <div class="settings-grid">
-              <div class="field full-width">
-                <label for="employee-name">氏名</label>
-                <input id="employee-name" name="employeeName" type="text"
-                       maxlength="50" autocomplete="name" required>
-              </div>
-              <div class="field">
-                <label for="hourly-wage">時給（円）</label>
-                <div class="number-control" data-number-control>
-                  <button class="number-step-button" type="button" data-action="decrease" aria-label="時給を1円減らす">−</button>
-                  <input id="hourly-wage" name="hourlyWage" type="number"
-                         min="1" step="1" value="1200" inputmode="numeric" required>
-                  <button class="number-step-button" type="button" data-action="increase" aria-label="時給を1円増やす">＋</button>
-                </div>
-                <p class="input-help">直接入力または−／＋で調整できます</p>
-              </div>
-              <div class="field">
-                <label for="standard-work-hours">1日の標準労働時間（時間）</label>
-                <div class="number-control" data-number-control>
-                  <button class="number-step-button" type="button" data-action="decrease" aria-label="標準労働時間を15分減らす">−</button>
-                  <input id="standard-work-hours" name="standardWorkHours"
-                         type="number" min="0.25" max="24" step="0.25"
-                         value="8" inputmode="decimal" required>
-                  <button class="number-step-button" type="button" data-action="increase" aria-label="標準労働時間を15分増やす">＋</button>
-                </div>
-                <p class="input-help">0.25時間（15分）単位で調整できます</p>
-              </div>
-              <div class="field">
-                <label for="break-minutes">休憩時間（分）</label>
-                <div class="number-control" data-number-control>
-                  <button class="number-step-button" type="button" data-action="decrease" aria-label="休憩時間を5分減らす">−</button>
-                  <input id="break-minutes" name="breakMinutes" type="number"
-                         min="0" max="1439" step="5" value="60" inputmode="numeric" required>
-                  <button class="number-step-button" type="button" data-action="increase" aria-label="休憩時間を5分増やす">＋</button>
-                </div>
-                <p class="input-help">5分単位で調整できます</p>
-              </div>
+              <div class="field full-width"><label for="employee-name">氏名</label><input id="employee-name" name="employeeName" type="text" maxlength="50" autocomplete="name" required></div>
+              <div class="field"><label for="hourly-wage">時給（円）</label><div class="number-control" data-number-control><button class="number-step-button" type="button" data-action="decrease" aria-label="時給を1円減らす">−</button><input id="hourly-wage" name="hourlyWage" type="number" min="1" step="1" value="1200" inputmode="numeric" required><button class="number-step-button" type="button" data-action="increase" aria-label="時給を1円増やす">＋</button></div><p class="input-help">直接入力または−／＋で調整できます</p></div>
+              <div class="field"><label for="standard-work-hours">1日の標準労働時間（時間）</label><div class="number-control" data-number-control><button class="number-step-button" type="button" data-action="decrease" aria-label="標準労働時間を15分減らす">−</button><input id="standard-work-hours" name="standardWorkHours" type="number" min="0.25" max="24" step="0.25" value="8" inputmode="decimal" required><button class="number-step-button" type="button" data-action="increase" aria-label="標準労働時間を15分増やす">＋</button></div><p class="input-help">0.25時間（15分）単位で調整できます</p></div>
+              <div class="field"><label for="break-minutes">休憩時間（分）</label><div class="number-control" data-number-control><button class="number-step-button" type="button" data-action="decrease" aria-label="休憩時間を5分減らす">−</button><input id="break-minutes" name="breakMinutes" type="number" min="0" max="1439" step="5" value="60" inputmode="numeric" required><button class="number-step-button" type="button" data-action="increase" aria-label="休憩時間を5分増やす">＋</button></div><p class="input-help">5分単位で調整できます</p></div>
+              <div class="field full-width preference-field"><label class="preference-toggle"><input id="show-break-check" type="checkbox" checked><span><strong>休憩確認を勤務入力に表示する</strong><small>体調管理の振り返り用です。給与計算には影響しません。</small></span></label></div>
             </div>
-            <p id="settings-error" class="form-message error" role="alert" hidden></p>
-            <p id="settings-status" class="save-status" hidden></p>
-            <button class="secondary-button" type="submit">設定を保存する</button>
+            <p id="settings-error" class="form-message error" role="alert" hidden></p><p id="settings-status" class="save-status" hidden></p><button class="secondary-button" type="submit">設定を保存する</button>
           </form>
         </details>
       </section>
-
       <section class="attendance-card" aria-labelledby="form-title">
-        <div class="card-heading">
-          <div class="heading-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect><path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path></svg>
-          </div>
-          <div>
-            <h2 id="form-title">勤務時間を入力</h2>
-            <p id="active-settings">先に基本設定を保存してください</p>
-          </div>
-        </div>
-
+        <div class="card-heading"><div class="heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect><path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path></svg></div><div><h2 id="form-title">勤務時間を入力</h2><p id="active-settings">先に基本設定を保存してください</p></div></div>
         <form id="attendance-form">
-          <div class="field full-width">
-            <label for="target-month">対象月</label>
-            <div class="select-wrap">
-              <select id="target-month" name="targetMonth">
-                <option value="current">今月</option>
-                <option value="previous">前月</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="field full-width">
-            <label for="work-date">勤務日</label>
-            <input id="work-date" name="workDate" type="date" required>
-            <p class="input-help">PCは直接入力、スマートフォンはカレンダーから選択できます</p>
-          </div>
-
-          <div class="time-fields">
-            <div class="field">
-              <label for="start-time">出勤時刻</label>
-              <input id="start-time" name="startTime" type="time" value="09:00" required>
-              <p class="input-help">PCは0900入力、スマートフォンは時間ピッカーを利用できます</p>
-            </div>
-            <div class="field">
-              <label for="end-time">退勤時刻</label>
-              <input id="end-time" name="endTime" type="time" value="18:00" required>
-              <p class="input-help">PCは1800入力、スマートフォンは時間ピッカーを利用できます</p>
-            </div>
-          </div>
-
-          <fieldset class="break-check">
-            <legend>今日の休憩はしっかり取れましたか？</legend>
-            <label>
-              <input type="radio" name="tookBreak" value="yes" required>
-              <span>はい</span>
-            </label>
-            <label>
-              <input type="radio" name="tookBreak" value="no">
-              <span>いいえ</span>
-            </label>
-          </fieldset>
-
-          <p id="form-error" class="form-message error" role="alert" hidden></p>
-          <button class="submit-button" type="submit">✓ 勤怠を登録する</button>
+          <div class="field full-width"><label for="target-month">対象月</label><div class="select-wrap"><select id="target-month" name="targetMonth"><option value="current">今月</option><option value="previous">前月</option></select></div></div>
+          <div class="field full-width"><label for="work-date">勤務日</label><input id="work-date" name="workDate" type="date" required><p class="input-help">PCは直接入力、スマートフォンはカレンダーから選択できます</p></div>
+          <div class="time-fields"><div class="field"><label for="start-time">出勤時刻</label><input id="start-time" name="startTime" type="time" value="09:00" required><p class="input-help">PCは0900入力、スマートフォンは時間ピッカーを利用できます</p></div><div class="field"><label for="end-time">退勤時刻</label><input id="end-time" name="endTime" type="time" value="18:00" required><p class="input-help">PCは1800入力、スマートフォンは時間ピッカーを利用できます</p></div></div>
+          <fieldset id="break-check-field" class="break-check"><legend>今日の休憩はしっかり取れましたか？ <span class="optional-label">任意</span></legend><p class="break-purpose">体調管理を振り返るための質問です。給与計算には使用しません。</p><label><input type="radio" name="tookBreak" value="yes" checked><span>はい</span></label><label><input type="radio" name="tookBreak" value="no"><span>いいえ</span></label></fieldset>
+          <p id="form-error" class="form-message error" role="alert" hidden></p><button class="submit-button" type="submit">✓ 勤怠を登録する</button>
         </form>
       </section>
-
-      <section class="summary-card" aria-labelledby="summary-title" aria-live="polite">
-        <div class="summary-heading">
-          <span class="check-icon" aria-hidden="true">✓</span>
-          <h2 id="summary-title">今回の登録結果</h2>
-        </div>
-        <dl>
-          <div><dt>実働時間</dt><dd id="work-hours">—<span>時間</span></dd></div>
-          <div><dt>残業時間</dt><dd id="overtime-hours">—<span>時間</span></dd></div>
-          <div><dt>基本給与</dt><dd id="base-pay">—円</dd></div>
-          <div><dt>残業手当</dt><dd id="overtime-pay">—円</dd></div>
-          <div class="payment"><dt>支給金額</dt><dd id="payment">—円</dd></div>
-        </dl>
-        <p id="save-status" class="save-status" hidden></p>
-        <div id="break-card" class="break-card" role="status" hidden>
-          <strong>みんなくろうカード</strong>
-          <p id="break-message"></p>
-        </div>
-      </section>
-
-      <section class="monthly-card" aria-labelledby="monthly-title" aria-live="polite">
-        <div class="summary-heading">
-          <span class="check-icon" aria-hidden="true">Σ</span>
-          <div>
-            <h2 id="monthly-title">月間集計</h2>
-            <p id="monthly-label">対象月の合計</p>
-          </div>
-        </div>
-        <dl>
-          <div><dt>勤務日数</dt><dd id="monthly-work-days">0<span>日</span></dd></div>
-          <div><dt>実働時間</dt><dd id="monthly-work-hours">0<span>時間</span></dd></div>
-          <div><dt>残業時間</dt><dd id="monthly-overtime-hours">0<span>時間</span></dd></div>
-          <div><dt>基本給与</dt><dd id="monthly-base-pay">0円</dd></div>
-          <div><dt>残業手当</dt><dd id="monthly-overtime-pay">0円</dd></div>
-          <div class="payment"><dt>支給金額</dt><dd id="monthly-total-pay">0円</dd></div>
-        </dl>
-        <p id="monthly-error" class="form-message error" role="alert" hidden></p>
-      </section>
-
+      <section class="summary-card" aria-labelledby="summary-title" aria-live="polite"><div class="summary-heading"><span class="check-icon" aria-hidden="true">✓</span><h2 id="summary-title">今回の登録結果</h2></div><dl><div><dt>実働時間</dt><dd id="work-hours">—<span>時間</span></dd></div><div><dt>残業時間</dt><dd id="overtime-hours">—<span>時間</span></dd></div><div><dt>基本給与</dt><dd id="base-pay">—円</dd></div><div><dt>残業手当</dt><dd id="overtime-pay">—円</dd></div><div class="payment"><dt>支給金額</dt><dd id="payment">—円</dd></div></dl><p id="save-status" class="save-status" hidden></p><div id="break-card" class="break-card" role="status" hidden><strong>みんなくろうカード</strong><p id="break-message"></p></div></section>
+      <section class="monthly-card" aria-labelledby="monthly-title" aria-live="polite"><div class="summary-heading"><span class="check-icon" aria-hidden="true">Σ</span><div><h2 id="monthly-title">月間集計</h2><p id="monthly-label">対象月の合計</p></div></div><dl><div><dt>勤務日数</dt><dd id="monthly-work-days">0<span>日</span></dd></div><div><dt>実働時間</dt><dd id="monthly-work-hours">0<span>時間</span></dd></div><div><dt>残業時間</dt><dd id="monthly-overtime-hours">0<span>時間</span></dd></div><div><dt>基本給与</dt><dd id="monthly-base-pay">0円</dd></div><div><dt>残業手当</dt><dd id="monthly-overtime-pay">0円</dd></div><div class="payment"><dt>支給金額</dt><dd id="monthly-total-pay">0円</dd></div></dl><p id="monthly-error" class="form-message error" role="alert" hidden></p></section>
       <p class="help-text">登録した設定と勤怠はCSVファイルに保存されます</p>
     </main>
-
     <footer>© 2026 TimeCard Payroll System</footer>
   </body>
 </html>
