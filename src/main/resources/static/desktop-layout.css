@@ -23,29 +23,9 @@
     margin-bottom: 0;
   }
 
-  .attendance-card,
-  .summary-card {
-    margin-top: 0;
-  }
-
-  .summary-card dl {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px 0;
-  }
-
-  .summary-card dl > div {
-    border-right: 1px solid var(--line);
-  }
-
-  .summary-card dl > div:nth-child(2n) {
-    border-right: 0;
-  }
-
-  .summary-card dl > div:last-child {
+  .attendance-card {
     grid-column: 1 / -1;
-    border-right: 0;
-    border-top: 1px solid var(--line);
-    padding-top: 20px;
+    margin-top: 0;
   }
 
   .settings-grid {
