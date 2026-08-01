@@ -36,9 +36,10 @@
               <div class="field"><label for="break-minutes">休憩時間（分）</label><div class="number-control" data-number-control><button class="number-step-button" type="button" data-action="decrease" aria-label="休憩時間を5分減らす">−</button><input id="break-minutes" name="breakMinutes" type="number" min="0" max="1439" step="5" value="60" inputmode="numeric" required><button class="number-step-button" type="button" data-action="increase" aria-label="休憩時間を5分増やす">＋</button></div><p class="input-help">5分単位で調整できます</p></div>
               <div class="field full-width preference-field"><label class="preference-toggle"><input id="show-break-check" type="checkbox" checked><span><strong>休憩確認を勤務入力に表示する</strong><small>体調管理の振り返り用です。給与計算には影響しません。</small></span></label></div>
             </div>
-            <p id="settings-error" class="form-message error" role="alert" hidden></p><p id="settings-status" class="save-status" hidden></p><button class="secondary-button" type="submit">設定を保存する</button>
+            <p id="settings-error" class="form-message error" role="alert" hidden></p><button class="secondary-button" type="submit">設定を保存する</button>
           </form>
         </details>
+        <p id="settings-status" class="save-status" role="status" hidden></p>
       </section>
       <section class="attendance-card" aria-labelledby="form-title">
         <div class="card-heading"><div class="heading-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="15" rx="2"></rect><path d="M8 3.5v4M16 3.5v4M3.5 10h17"></path></svg></div><div><h2 id="form-title">勤務時間を入力</h2><p id="active-settings">先に基本設定を保存してください</p></div></div>
