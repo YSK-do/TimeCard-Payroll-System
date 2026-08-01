@@ -34,6 +34,14 @@ function formatCurrency(amount) {
   return amount.toLocaleString("ja-JP");
 }
 
+function setPickerValue(picker, value, label) {
+  const stringValue = String(value);
+  if (![...picker.options].some((option) => option.value === stringValue)) {
+    picker.add(new Option(label, stringValue));
+  }
+  picker.value = stringValue;
+}
+
 function calculatePayroll(workMinutes, overtimeMinutes) {
   const basePay = Math.floor(
     workMinutes * currentSettings.hourlyWage / 60
@@ -102,9 +110,21 @@ async function loadSettings() {
 
   currentSettings = settings;
   employeeNameInput.value = settings.employeeName;
-  hourlyWageInput.value = settings.hourlyWage;
-  standardWorkHoursInput.value = settings.standardWorkMinutes / 60;
-  breakMinutesInput.value = settings.breakMinutes;
+  setPickerValue(
+    hourlyWageInput,
+    settings.hourlyWage,
+    `${formatCurrency(settings.hourlyWage)}円（保存済み）`
+  );
+  setPickerValue(
+    standardWorkHoursInput,
+    settings.standardWorkMinutes / 60,
+    `${formatDurationText(settings.standardWorkMinutes)}（保存済み）`
+  );
+  setPickerValue(
+    breakMinutesInput,
+    settings.breakMinutes,
+    `${settings.breakMinutes}分（保存済み）`
+  );
   showActiveSettings(settings);
 
   if (settings.employeeName) {
