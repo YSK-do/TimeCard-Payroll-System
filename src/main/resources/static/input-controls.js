@@ -37,7 +37,7 @@ if (mobileDevice) {
 const calendarDateInput = document.querySelector("#work-date");
 const calendarMonthSelect = document.querySelector("#target-month");
 const calendarStartInput = document.querySelector("#start-time");
-const calendarSaveStatus = document.querySelector("#save-status");
+const calendarSaveStatus = document.querySelector("#registration-result");
 const calendarSettingsStatus = document.querySelector("#settings-status");
 
 if (calendarDateInput && calendarMonthSelect) {
