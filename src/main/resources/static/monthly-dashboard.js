@@ -14,7 +14,7 @@ const dailyBasePay = document.querySelector("#daily-base-pay");
 const dailyOvertimePay = document.querySelector("#daily-overtime-pay");
 const dailyTotalPay = document.querySelector("#daily-total-pay");
 const dashboardDateInput = document.querySelector("#work-date");
-const dashboardSaveStatus = document.querySelector("#save-status");
+const dashboardSaveStatus = document.querySelector("#registration-result");
 
 function formatDashboardDuration(totalMinutes) {
   const hours = Math.floor(totalMinutes / 60);
