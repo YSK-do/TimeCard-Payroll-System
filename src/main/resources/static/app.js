@@ -9,9 +9,7 @@ const monthSelect = document.querySelector("#target-month");
 const startInput = document.querySelector("#start-time");
 const endInput = document.querySelector("#end-time");
 const errorMessage = document.querySelector("#form-error");
-const saveStatus = document.querySelector("#save-status");
-const breakCard = document.querySelector("#break-card");
-const breakMessage = document.querySelector("#break-message");
+const registrationResult = document.querySelector("#registration-result");
 const attendanceSubmitButton = attendanceForm.querySelector("button[type='submit']");
 const attendanceSubmitButtonText = attendanceSubmitButton.textContent;
 
@@ -50,39 +48,12 @@ function calculatePayroll(workMinutes, overtimeMinutes) {
   };
 }
 
-function showSummary(
-  workMinutes,
-  overtimeMinutes,
-  basePay,
-  overtimePay,
-  totalPay
-) {
-  document.querySelector("#work-hours").innerHTML =
-    formatDuration(workMinutes);
-  document.querySelector("#overtime-hours").innerHTML =
-    formatDuration(overtimeMinutes);
-  document.querySelector("#base-pay").textContent =
-    `${formatCurrency(basePay)}円`;
-  document.querySelector("#overtime-pay").textContent =
-    `${formatCurrency(overtimePay)}円`;
-  document.querySelector("#payment").textContent =
-    `${formatCurrency(totalPay)}円`;
-}
-
-function showBreakMessage() {
-  const selectedBreak = attendanceForm.querySelector(
-    'input[name="tookBreak"]:checked'
-  );
-
-  if (selectedBreak.value === "yes") {
-    breakMessage.textContent =
-      "素晴らしい！体調管理バッチリですね。明日もその調子で！";
-  } else {
-    breakMessage.textContent =
-      "今日もお疲れ様でした。無理しすぎず、ゆっくり休んでくださいね。";
-  }
-
-  breakCard.hidden = false;
+function formatDurationText(totalMinutes) {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return minutes === 0
+    ? `${hours}時間`
+    : `${hours}時間${minutes}分`;
 }
 
 function showActiveSettings(settings) {
@@ -291,8 +262,7 @@ attendanceForm.addEventListener("submit", async (event) => {
   }
   attendanceSubmitButton.disabled = true;
   attendanceSubmitButton.textContent = "登録中...";
-  saveStatus.hidden = true;
-  breakCard.hidden = true;
+  registrationResult.hidden = true;
 
   try {
     const response = await fetch("/api/attendances", {
@@ -311,18 +281,11 @@ attendanceForm.addEventListener("submit", async (event) => {
       throw new Error(result.message || "勤怠の登録に失敗しました。");
     }
 
-    showSummary(
-      result.workMinutes,
-      result.overtimeMinutes,
-      result.basePay,
-      result.overtimePay,
-      result.totalPay
-    );
     errorMessage.hidden = true;
-    saveStatus.textContent = `✓ ${result.message}`;
-    saveStatus.hidden = false;
+    registrationResult.textContent =
+      `登録しました：実働${formatDurationText(result.workMinutes)}・${formatCurrency(result.totalPay)}円`;
+    registrationResult.hidden = false;
     attendanceSubmitButton.textContent = "✓ 登録済み";
-    showBreakMessage();
     await loadMonthlySummary();
 
     attendanceButtonResetTimer = setTimeout(() => {
