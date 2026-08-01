@@ -29,11 +29,6 @@
     height: 100%;
   }
 
-  .summary-card {
-    position: sticky;
-    top: 24px;
-  }
-
   .summary-card dl {
     grid-template-columns: repeat(2, 1fr);
     gap: 22px 0;
