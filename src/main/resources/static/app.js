@@ -143,6 +143,11 @@ settingsForm.addEventListener("submit", async (event) => {
     settingsStatus.textContent = "✓ 基本設定を保存しました。";
     settingsStatus.hidden = false;
     await loadMonthlySummary();
+
+    const settingsDetails = document.querySelector(".settings-card details");
+    if (settingsDetails) {
+      settingsDetails.open = false;
+    }
   } catch (error) {
     settingsError.textContent = error.message;
     settingsError.hidden = false;
