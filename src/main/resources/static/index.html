@@ -48,10 +48,10 @@
           <div class="time-fields"><div class="field"><label for="start-time">出勤時刻</label><input id="start-time" name="startTime" type="time" value="09:00" required><p class="input-help">PCは0900入力、スマートフォンは時間ピッカーを利用できます</p></div><div class="field"><label for="end-time">退勤時刻</label><input id="end-time" name="endTime" type="time" value="18:00" required><p class="input-help">PCは1800入力、スマートフォンは時間ピッカーを利用できます</p></div></div>
           <fieldset id="break-check-field" class="break-check"><legend>今日の休憩はしっかり取れましたか？ <span class="optional-label">任意</span></legend><p class="break-purpose">体調管理を振り返るための質問です。給与計算には使用しません。</p><label><input type="radio" name="tookBreak" value="yes" checked><span>はい</span></label><label><input type="radio" name="tookBreak" value="no"><span>いいえ</span></label></fieldset>
           <p id="history-edit-message" class="history-edit-message" hidden>過去月は閲覧専用です。編集を許可すると登録できます。</p>
-          <p id="form-error" class="form-message error" role="alert" hidden></p><button class="submit-button" type="submit">✓ 勤怠を登録する</button>
+          <p id="form-error" class="form-message error" role="alert" hidden></p><button class="submit-button" type="submit">✓ 勤怠を登録する</button><p id="registration-result" class="save-status" role="status" hidden></p>
         </form>
       </section>
-      <section class="summary-card" aria-labelledby="summary-title" aria-live="polite"><div class="summary-heading"><span class="check-icon" aria-hidden="true">✓</span><h2 id="summary-title">今回の登録結果</h2></div><dl><div><dt>実働時間</dt><dd id="work-hours">—<span>時間</span></dd></div><div><dt>残業時間</dt><dd id="overtime-hours">—<span>時間</span></dd></div><div><dt>基本給与</dt><dd id="base-pay">—円</dd></div><div><dt>残業手当</dt><dd id="overtime-pay">—円</dd></div><div class="payment"><dt>支給金額</dt><dd id="payment">—円</dd></div></dl><p id="save-status" class="save-status" hidden></p><div id="break-card" class="break-card" role="status" hidden><strong>みんなくろうカード</strong><p id="break-message"></p></div></section>
+      
       <section class="monthly-dashboard" aria-labelledby="monthly-title" aria-live="polite">
         <div class="history-toolbar" aria-label="過去月の操作">
           <button id="history-previous" type="button">← 前月</button>
