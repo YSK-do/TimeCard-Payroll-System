@@ -110,11 +110,7 @@ async function loadSettings() {
 
   currentSettings = settings;
   employeeNameInput.value = settings.employeeName;
-  setPickerValue(
-    hourlyWageInput,
-    settings.hourlyWage,
-    `${formatCurrency(settings.hourlyWage)}円（保存済み）`
-  );
+  hourlyWageInput.value = settings.hourlyWage;
   setPickerValue(
     standardWorkHoursInput,
     settings.standardWorkMinutes / 60,
