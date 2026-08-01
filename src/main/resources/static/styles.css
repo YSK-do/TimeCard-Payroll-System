@@ -97,26 +97,6 @@ select { padding: 0 40px 0 15px; appearance: none; cursor: pointer; }
 input:focus, select:focus { border-color: #4792c9; box-shadow: 0 0 0 3px rgba(53, 137, 196, .13); }
 .select-wrap { position: relative; }
 .select-wrap::after { content: ""; position: absolute; top: 18px; right: 17px; width: 7px; height: 7px; border-right: 1.5px solid #62778a; border-bottom: 1.5px solid #62778a; transform: rotate(45deg); pointer-events: none; }
-.scroll-picker-wrap::after { display: none; }
-.scroll-picker {
-  height: 184px;
-  padding: 0;
-  appearance: auto;
-  overflow-y: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-}
-.scroll-picker option {
-  min-height: 36px;
-  padding: 8px 14px;
-  display: flex;
-  align-items: center;
-}
-.scroll-picker option:checked {
-  color: white;
-  background: var(--blue) linear-gradient(0deg, var(--blue), var(--blue));
-}
-
 .input-with-icon { position: relative; }
 .input-with-icon svg { position: absolute; z-index: 1; top: 14px; left: 14px; width: 20px; color: #8192a2; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; pointer-events: none; }
 .time-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 20px; }
